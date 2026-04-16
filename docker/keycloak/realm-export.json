@@ -1,0 +1,70 @@
+{
+  "realm": "claeren",
+  "enabled": true,
+  "displayName": "Claeren",
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "otpPolicyPeriod": 30,
+  "clients": [
+    {
+      "clientId": "claeren-policy-app",
+      "name": "Claeren Policy App (Mobile)",
+      "enabled": true,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect",
+      "attributes": {
+        "access.token.lifespan": "28800"
+      }
+    },
+    {
+      "clientId": "claeren-bff-admin",
+      "name": "Claeren BFF Admin",
+      "enabled": true,
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "protocol": "openid-connect",
+      "serviceAccountClientScope": "realm-management"
+    }
+  ],
+  "roles": {
+    "realm": [
+      { "name": "particulier", "description": "Particuliere relatie" },
+      { "name": "zakelijk", "description": "Zakelijke relatie" }
+    ]
+  },
+  "users": [
+    {
+      "username": "demo-zakelijk",
+      "email": "zakelijk@claeren.nl",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Welkom02!", "temporary": false }],
+      "attributes": {
+        "entityIds": ["ENT-001", "ENT-002"],
+        "onboardingCompleted": ["true"]
+      },
+      "realmRoles": ["zakelijk"]
+    },
+    {
+      "username": "demo-particulier",
+      "email": "j.devries@claeren.nl",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Welkom01!", "temporary": false }],
+      "attributes": {
+        "entityIds": ["ENT-003"],
+        "onboardingCompleted": ["true"]
+      },
+      "realmRoles": ["particulier"]
+    }
+  ]
+}

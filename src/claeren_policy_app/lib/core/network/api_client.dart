@@ -27,6 +27,11 @@ class ApiClient {
         handler.next(options);
       },
       onError: (error, handler) {
+        // 401 = token verlopen → terugsturen naar login
+        if (error.response?.statusCode == 401) {
+          storage.clearAll();
+          // GoRouter redirect werkt via de router redirect guard (nog toe te voegen)
+        }
         handler.next(error);
       },
     ));

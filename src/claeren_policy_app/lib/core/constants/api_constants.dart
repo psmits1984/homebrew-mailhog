@@ -1,7 +1,9 @@
+import 'env.dart';
+
 class ApiConstants {
   ApiConstants._();
 
-  static const String baseUrl = 'http://localhost:5000';
+  static String get baseUrl => Env.apiBaseUrl;
 
   static const String login = '/api/auth/login';
   static const String twoFactor = '/api/auth/2fa/verify';
