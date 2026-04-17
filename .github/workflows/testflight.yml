@@ -1,0 +1,76 @@
+name: TestFlight
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'src/claeren_policy_app/**'
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: 'BFF API URL'
+        required: true
+        default: 'https://bff.claeren.nl'
+
+jobs:
+  testflight:
+    name: Build & Upload naar TestFlight
+    runs-on: macos-14        # Apple Silicon runner — snelste iOS builds
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Flutter installeren
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Ruby installeren
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: src/claeren_policy_app
+
+      - name: Flutter dependencies ophalen
+        working-directory: src/claeren_policy_app
+        run: flutter pub get
+
+      - name: Flutter code analyse
+        working-directory: src/claeren_policy_app
+        run: flutter analyze --no-fatal-infos
+
+      - name: CocoaPods cache
+        uses: actions/cache@v4
+        with:
+          path: src/claeren_policy_app/ios/Pods
+          key: pods-${{ hashFiles('src/claeren_policy_app/ios/Podfile.lock') }}
+          restore-keys: pods-
+
+      - name: App Store Connect API key instellen
+        run: |
+          echo "${{ secrets.ASC_PRIVATE_KEY }}" | base64 --decode > /tmp/asc_key.p8
+          echo "ASC_KEY_PATH=/tmp/asc_key.p8" >> $GITHUB_ENV
+
+      - name: Fastlane beta uitvoeren
+        working-directory: src/claeren_policy_app
+        env:
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_TOKEN }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+          API_URL: ${{ github.event.inputs.api_url || 'https://bff.claeren.nl' }}
+        run: bundle exec fastlane beta
+
+      - name: Build artefact uploaden
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ipa-${{ github.run_number }}
+          path: src/claeren_policy_app/build/*.ipa
+          retention-days: 14

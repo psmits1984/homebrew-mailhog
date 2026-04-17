@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+  <!-- App identity -->
+  <key>CFBundleIdentifier</key>
+  <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+  <key>CFBundleName</key>
+  <string>Claeren</string>
+  <key>CFBundleDisplayName</key>
+  <string>Claeren</string>
+  <key>CFBundleVersion</key>
+  <string>$(FLUTTER_BUILD_NUMBER)</string>
+  <key>CFBundleShortVersionString</key>
+  <string>$(FLUTTER_BUILD_NAME)</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleSignature</key>
+  <string>????</string>
+  <key>CFBundleExecutable</key>
+  <string>$(EXECUTABLE_NAME)</string>
+
+  <!-- iOS minimum versie -->
+  <key>MinimumOSVersion</key>
+  <string>16.0</string>
+
+  <!-- Ondersteunde oriëntaties (telefoon) -->
+  <key>UISupportedInterfaceOrientations</key>
+  <array>
+    <string>UIInterfaceOrientationPortrait</string>
+    <string>UIInterfaceOrientationLandscapeLeft</string>
+    <string>UIInterfaceOrientationLandscapeRight</string>
+  </array>
+
+  <!-- iPad oriëntaties -->
+  <key>UISupportedInterfaceOrientations~ipad</key>
+  <array>
+    <string>UIInterfaceOrientationPortrait</string>
+    <string>UIInterfaceOrientationPortraitUpsideDown</string>
+    <string>UIInterfaceOrientationLandscapeLeft</string>
+    <string>UIInterfaceOrientationLandscapeRight</string>
+  </array>
+
+  <!-- Push notificaties (FCM) -->
+  <key>UIBackgroundModes</key>
+  <array>
+    <string>fetch</string>
+    <string>remote-notification</string>
+  </array>
+
+  <!-- Flutter specifiek -->
+  <key>CADisableMinimumFrameDurationOnPhone</key>
+  <true/>
+  <key>UIApplicationSupportsIndirectInputEvents</key>
+  <true/>
+
+  <!-- Netwerkbeveiliging — sta HTTP toe voor development (verwijder voor App Store) -->
+  <key>NSAppTransportSecurity</key>
+  <dict>
+    <key>NSAllowsLocalNetworking</key>
+    <true/>
+  </dict>
+
+  <!-- Camera (voor documenten scannen — toekomstige fase) -->
+  <key>NSCameraUsageDescription</key>
+  <string>Claeren gebruikt de camera om schade-foto's te maken bij een schademelding.</string>
+
+  <!-- Foto's bibliotheek -->
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>Claeren gebruikt uw fotobibliotheek om bijlagen toe te voegen bij een schademelding.</string>
+
+  <!-- Face ID / Touch ID voor biometrisch inloggen (toekomstige fase) -->
+  <key>NSFaceIDUsageDescription</key>
+  <string>Claeren gebruikt Face ID om snel en veilig in te loggen.</string>
+
+</dict>
+</plist>

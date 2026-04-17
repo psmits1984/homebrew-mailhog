@@ -1,0 +1,53 @@
+name: BFF Build & Test
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'src/Claeren.PolicyApp.BFF/**'
+  pull_request:
+    paths:
+      - 'src/Claeren.PolicyApp.BFF/**'
+
+jobs:
+  build:
+    name: Build & Test BFF
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: .NET 8 SDK installeren
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Dependencies ophalen
+        working-directory: src/Claeren.PolicyApp.BFF
+        run: dotnet restore
+
+      - name: Build
+        working-directory: src/Claeren.PolicyApp.BFF
+        run: dotnet build --no-restore -c Release
+
+      - name: Docker image bouwen
+        run: |
+          docker build \
+            -t claeren-bff:${{ github.sha }} \
+            src/Claeren.PolicyApp.BFF/
+
+      - name: Health check testen (mock modus)
+        run: |
+          docker run -d \
+            -p 5000:8080 \
+            -e ASPNETCORE_ENVIRONMENT=Development \
+            -e Features__MockCcs=true \
+            -e Jwt__Secret=test-secret-minimum-32-characters-long \
+            -e Jwt__Issuer=test \
+            -e Jwt__Audience=test \
+            --name bff-test \
+            claeren-bff:${{ github.sha }}
+          sleep 5
+          curl -f http://localhost:5000/health || (docker logs bff-test && exit 1)
+          docker stop bff-test
