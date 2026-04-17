@@ -4,8 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final secureStorageProvider = Provider<SecureStorage>((ref) => SecureStorage());
 
 class SecureStorage {
+  // Web: iOptions zorgt voor localStorage-gebaseerde opslag
+  // iOS: Keychain  |  Android: EncryptedSharedPreferences
   static const _storage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+    wOptions: WebOptions(dbName: 'claeren_secure', publicKey: 'claeren_pk'),
   );
 
   static const _keyToken = 'jwt_token';

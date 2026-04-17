@@ -111,8 +111,14 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // CORS
+var allowedOrigins = config.GetSection("Cors:AllowedOrigins").Get<string[]>()
+    ?? ["http://localhost:*"];
+
 builder.Services.AddCors(o =>
-    o.AddPolicy("MobileApp", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+    o.AddPolicy("MobileApp", p => p
+        .WithOrigins(allowedOrigins)
+        .AllowAnyHeader()
+        .AllowAnyMethod()));
 
 // Logging
 builder.Logging.AddConsole();

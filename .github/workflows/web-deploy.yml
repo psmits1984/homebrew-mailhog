@@ -1,0 +1,58 @@
+name: Web Deploy
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'src/claeren_policy_app/**'
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: 'BFF API URL (Railway of eigen server)'
+        required: true
+        default: 'https://claeren-bff.up.railway.app'
+
+jobs:
+  deploy-web:
+    name: Flutter Web → Vercel
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Flutter installeren
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Dependencies ophalen
+        working-directory: src/claeren_policy_app
+        run: flutter pub get
+
+      - name: Flutter Web build
+        working-directory: src/claeren_policy_app
+        env:
+          API_URL: ${{ github.event.inputs.api_url || secrets.API_URL || 'https://claeren-bff.up.railway.app' }}
+        run: |
+          flutter build web \
+            --release \
+            --dart-define=ENV=production \
+            --dart-define=API_URL=$API_URL \
+            --web-renderer canvaskit \
+            --pwa-strategy offline-first
+
+      - name: Deploy naar Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: src/claeren_policy_app/build/web
+          vercel-args: '--prod'
+
+      - name: Deploy URL tonen
+        run: echo "App live op https://claeren-policyapp.vercel.app"
