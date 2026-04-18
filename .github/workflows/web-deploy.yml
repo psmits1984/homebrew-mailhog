@@ -35,6 +35,7 @@ jobs:
           flutter build web \
             --release \
             --base-href "/" \
+            --web-renderer html \
             --dart-define=ENV=production \
             --dart-define=API_URL=https://homebrew-mailhog-production.up.railway.app
 
