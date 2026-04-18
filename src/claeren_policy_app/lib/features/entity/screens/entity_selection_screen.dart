@@ -101,8 +101,8 @@ class _EntityCard extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: CircleAvatar(
           backgroundColor: isZakelijk
-              ? AppColors.primary.withOpacity(0.1)
-              : AppColors.accent.withOpacity(0.15),
+              ? AppColors.primary.withValues(alpha: 0.1)
+              : AppColors.accent.withValues(alpha: 0.15),
           child: Icon(
             isZakelijk ? Icons.business : Icons.person_outlined,
             color: isZakelijk ? AppColors.primary : AppColors.accent,
