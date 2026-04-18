@@ -9,7 +9,7 @@ class SecureStorage {
   static final _storage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
     iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
-    wOptions: WebOptions(dbName: 'claeren_secure', publicKey: 'claeren_pk'),
+    webOptions: WebOptions(dbName: 'claeren_secure', publicKey: 'claeren_pk'),
   );
 
   static const _keyToken = 'jwt_token';
