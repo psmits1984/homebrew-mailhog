@@ -1,89 +1,32 @@
 default_platform(:ios)
 
 platform :ios do
+  desc "Build en upload naar TestFlight"
+  lane :beta do
+    setup_ci if ENV['CI']
 
-  # ── Certificaten en provisioning ophalen (match) ─────────────────────────
-  desc "Synchroniseer certificaten via App Store Connect API"
-  lane :certificates do
-    app_store_connect_api_key(
-      key_id: ENV["ASC_KEY_ID"],
-      issuer_id: ENV["ASC_ISSUER_ID"],
-      key_content: ENV["ASC_PRIVATE_KEY"],
-      is_key_content_base64: true,
-    )
     match(
       type: "appstore",
-      app_identifier: "nl.claeren.policyapp",
       readonly: is_ci,
-    )
-  end
-
-  # ── TestFlight upload ─────────────────────────────────────────────────────
-  desc "Bouw en upload naar TestFlight"
-  lane :beta do
-    # Certificaten ophalen
-    certificates
-
-    # Versienummer ophogen (build number = huidige datum + tijd)
-    increment_build_number(
-      build_number: Time.now.strftime("%Y%m%d%H%M"),
-      xcodeproj: "Runner.xcodeproj",
+      git_basic_authorization: ENV["MATCH_GIT_BASIC_AUTHORIZATION"],
     )
 
-    # Flutter release build
-    sh("flutter build ios --release --no-codesign " \
-       "--dart-define=ENV=production " \
-       "--dart-define=API_URL=#{ENV.fetch('API_URL', 'https://bff.claeren.nl')}")
-
-    # Xcode archiveren en exporteren
     build_app(
-      workspace: "Runner.xcworkspace",
+      workspace: "ios/Runner.xcworkspace",
       scheme: "Runner",
       export_method: "app-store",
-      export_options: {
-        provisioningProfiles: {
-          "nl.claeren.policyapp" => "match AppStore nl.claeren.policyapp",
-        },
-      },
-      output_directory: "./build",
-      output_name: "ClaerénPolicyApp.ipa",
     )
 
-    # Upload naar TestFlight
     upload_to_testflight(
+      api_key: {
+        key_id: ENV["ASC_KEY_ID"],
+        issuer_id: ENV["ASC_ISSUER_ID"],
+        key_content: ENV["ASC_PRIVATE_KEY"],
+        is_key_content_base64: true,
+        duration: 1200,
+        in_house: false,
+      },
       skip_waiting_for_build_processing: true,
-      notify_external_testers: false,
-      changelog: changelog_from_git_commits(
-        commits_count: 5,
-        pretty: "- %s",
-      ),
     )
-
-    # Slack notificatie (optioneel — verwijder als je geen Slack hebt)
-    # slack(
-    #   message: "Nieuwe Claeren app build op TestFlight!",
-    #   slack_url: ENV["SLACK_WEBHOOK_URL"],
-    # )
-  end
-
-  # ── App Store release ─────────────────────────────────────────────────────
-  desc "Submit naar de App Store"
-  lane :release do
-    certificates
-    build_app(
-      workspace: "Runner.xcworkspace",
-      scheme: "Runner",
-      export_method: "app-store",
-    )
-    upload_to_app_store(
-      submit_for_review: true,
-      automatic_release: false,
-      force: true,
-    )
-  end
-
-  # ── Foutafhandeling ───────────────────────────────────────────────────────
-  error do |lane, exception|
-    puts "Fout in lane #{lane}: #{exception.message}"
   end
 end

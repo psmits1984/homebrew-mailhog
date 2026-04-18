@@ -1,5 +1,4 @@
-# Vul in met jouw Apple Developer gegevens
-app_identifier "nl.claeren.policyapp"
-apple_id "JOUW_APPLE_ID@EMAIL.NL"
-team_id "JOUW_TEAM_ID"          # 10 tekens, te vinden op developer.apple.com
-itc_team_id "JOUW_ITC_TEAM_ID"  # App Store Connect team ID
+app_identifier("nl.claeren.app")
+apple_id(ENV["APPLE_ID"] || "")
+itc_team_id(ENV["ITC_TEAM_ID"] || "")
+team_id(ENV["TEAM_ID"] || "")
