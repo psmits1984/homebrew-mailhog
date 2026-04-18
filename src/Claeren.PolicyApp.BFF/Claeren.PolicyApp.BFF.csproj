@@ -8,20 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Auth -->
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
-
-    <!-- OpenAPI -->
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-
-    <!-- Resilience (Polly v8 via Microsoft.Extensions) -->
-    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.4.0" />
-
-    <!-- Health checks -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.10.0" />
     <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="8.0.1" />
-
-    <!-- Crypto (2FA mock) -->
     <PackageReference Include="OtpNet" Version="1.4.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
