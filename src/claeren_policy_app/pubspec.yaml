@@ -21,7 +21,6 @@ dependencies:
 
   # Lokale opslag
   flutter_secure_storage: ^9.2.2
-  hive_flutter: ^1.1.0
 
   # UI
   cached_network_image: ^3.3.1
