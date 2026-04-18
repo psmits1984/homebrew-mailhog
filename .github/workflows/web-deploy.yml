@@ -1,20 +1,17 @@
-name: Web Deploy
+name: Flutter Web → GitHub Pages
 
 on:
   push:
-    branches: [main, master]
+    branches: [master]
     paths:
       - 'src/claeren_policy_app/**'
   workflow_dispatch:
-    inputs:
-      api_url:
-        description: 'BFF API URL (Railway of eigen server)'
-        required: true
-        default: 'https://claeren-bff.up.railway.app'
+
+permissions:
+  contents: write
 
 jobs:
-  deploy-web:
-    name: Flutter Web → Vercel
+  build-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -33,26 +30,19 @@ jobs:
         working-directory: src/claeren_policy_app
         run: flutter pub get
 
-      - name: Flutter Web build
+      - name: Flutter Web bouwen
         working-directory: src/claeren_policy_app
-        env:
-          API_URL: ${{ github.event.inputs.api_url || secrets.API_URL || 'https://claeren-bff.up.railway.app' }}
         run: |
           flutter build web \
             --release \
+            --base-href "/" \
             --dart-define=ENV=production \
-            --dart-define=API_URL=$API_URL \
-            --web-renderer canvaskit \
-            --pwa-strategy offline-first
+            --dart-define=API_URL=https://homebrew-mailhog-production.up.railway.app
 
-      - name: Deploy naar Vercel
-        uses: amondnet/vercel-action@v25
+      - name: Deploy naar GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: src/claeren_policy_app/build/web
-          vercel-args: '--prod'
-
-      - name: Deploy URL tonen
-        run: echo "App live op https://claeren-policyapp.vercel.app"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: src/claeren_policy_app/build/web
+          publish_branch: gh-pages
+          force_orphan: true
