@@ -69,6 +69,17 @@
     window.addEventListener('flutter-first-frame', () => {
       document.getElementById('loading').remove();
     });
+
+    // Toon foutmelding als Flutter niet start binnen 20 seconden
+    setTimeout(() => {
+      const el = document.getElementById('loading-text');
+      if (el) el.textContent = 'Laadtijd overschreden. Ververs de pagina.';
+    }, 20000);
+
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('loading-text');
+      if (el) el.textContent = 'Fout: ' + (e.message || 'onbekend');
+    });
   </script>
 
   <script src="flutter_bootstrap.js" async></script>
