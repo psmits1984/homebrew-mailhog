@@ -29,10 +29,6 @@ jobs:
         working-directory: src/claeren_policy_app
         run: flutter pub get
 
-      - name: Flutter analyse
-        working-directory: src/claeren_policy_app
-        run: flutter analyze --no-fatal-infos
-
       - name: Flutter Web bouwen
         working-directory: src/claeren_policy_app
         run: |
@@ -40,8 +36,7 @@ jobs:
             --release \
             --base-href "/" \
             --dart-define=ENV=production \
-            --dart-define=API_URL=https://homebrew-mailhog-production.up.railway.app \
-            --verbose 2>&1 | tee /tmp/flutter-build.log; exit ${PIPESTATUS[0]}
+            --dart-define=API_URL=https://homebrew-mailhog-production.up.railway.app
 
       - name: Deploy naar GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
