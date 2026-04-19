@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'app.dart';
-import 'core/constants/env.dart';
+import 'core/platform/web_init.dart';
+import 'core/storage/secure_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
 
-  // Activeer Firebase initialisatie als FCM geconfigureerd is
-  // if (Env.fcmSenderId.isNotEmpty) await Firebase.initializeApp(...);
-
-  debugPrint('Omgeving: ${Env.isProduction ? "productie" : "development"}');
-  debugPrint('API: ${Env.apiBaseUrl}');
+  // On web: read JWT from HTML login form (stored in window.__claeren_jwt)
+  final webToken = await getWebInitialToken();
+  if (webToken != null) {
+    await SecureStorage().saveToken(webToken);
+    clearWebInitialToken();
+  }
 
   runApp(const ProviderScope(child: ClaerenApp()));
 }
