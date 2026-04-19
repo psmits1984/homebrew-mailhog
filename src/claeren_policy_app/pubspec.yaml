@@ -1,6 +1,6 @@
 name: claeren_policy_app
 description: Claeren mobiele polissen-app – schadeverzekeringen voor particulieren en zakelijke relaties.
-version: 1.0.0+8
+version: 1.0.0+9
 
 environment:
   sdk: '>=3.6.0 <4.0.0'
@@ -8,6 +8,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_riverpod: ^2.6.1
+  go_router: ^14.6.3
+  flutter_secure_storage: ^9.2.4
+  dio: ^5.7.0
 
 dev_dependencies:
   flutter_test:
