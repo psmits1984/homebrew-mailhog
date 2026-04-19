@@ -14,6 +14,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _usernameCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
+  final _usernameFocus = FocusNode();
+  final _passwordFocus = FocusNode();
   bool _loading = false;
   bool _obscurePassword = true;
   String? _error;
@@ -24,6 +26,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void dispose() {
     _usernameCtrl.dispose();
     _passwordCtrl.dispose();
+    _usernameFocus.dispose();
+    _passwordFocus.dispose();
     super.dispose();
   }
 
@@ -90,16 +94,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const SizedBox(height: 32),
                       _buildInputField(
                         controller: _usernameCtrl,
+                        focusNode: _usernameFocus,
                         hint: 'E-mailadres',
                         keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        onSubmitted: (_) => _passwordFocus.requestFocus(),
                         errorText: _usernameError,
                         prefixIcon: Icons.email_outlined,
                       ),
                       const SizedBox(height: 16),
                       _buildInputField(
                         controller: _passwordCtrl,
+                        focusNode: _passwordFocus,
                         hint: 'Wachtwoord',
                         obscureText: _obscurePassword,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _login(),
                         errorText: _passwordError,
                         prefixIcon: Icons.lock_outlined,
                         suffix: IconButton(
@@ -130,8 +140,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Widget _buildInputField({
     required TextEditingController controller,
+    required FocusNode focusNode,
     required String hint,
     TextInputType? keyboardType,
+    TextInputAction? textInputAction,
+    ValueChanged<String>? onSubmitted,
     bool obscureText = false,
     String? errorText,
     IconData? prefixIcon,
@@ -140,42 +153,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          height: 56,
-          decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: errorText != null ? AppColors.error : const Color(0xFFD1D5DB),
-              width: 1.5,
+        GestureDetector(
+          onTap: () => focusNode.requestFocus(),
+          child: Container(
+            height: 56,
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: errorText != null ? AppColors.error : const Color(0xFFD1D5DB),
+                width: 1.5,
+              ),
             ),
-          ),
-          child: Row(
-            children: [
-              if (prefixIcon != null) ...[
+            child: Row(
+              children: [
+                if (prefixIcon != null) ...[
+                  const SizedBox(width: 12),
+                  Icon(prefixIcon, color: AppColors.textSecondary, size: 20),
+                ],
                 const SizedBox(width: 12),
-                Icon(prefixIcon, color: AppColors.textSecondary, size: 20),
-              ],
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  keyboardType: keyboardType,
-                  obscureText: obscureText,
-                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 16),
-                  decoration: InputDecoration(
-                    hintText: hint,
-                    hintStyle: const TextStyle(color: AppColors.textSecondary),
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    isDense: true,
-                    contentPadding: EdgeInsets.zero,
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    keyboardType: keyboardType,
+                    textInputAction: textInputAction,
+                    onSubmitted: onSubmitted,
+                    obscureText: obscureText,
+                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 16),
+                    decoration: InputDecoration(
+                      hintText: hint,
+                      hintStyle: const TextStyle(color: AppColors.textSecondary),
+                      filled: false,
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      isDense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
                   ),
                 ),
-              ),
-              if (suffix != null) suffix,
-            ],
+                if (suffix != null) suffix,
+              ],
+            ),
           ),
         ),
         if (errorText != null) ...[
