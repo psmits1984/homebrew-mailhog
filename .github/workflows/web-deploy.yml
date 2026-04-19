@@ -8,21 +8,12 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
+  contents: write
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout
@@ -49,14 +40,9 @@ jobs:
             --dart-define=ENV=production \
             --dart-define=API_URL=https://homebrew-mailhog-production.up.railway.app
 
-      - name: GitHub Pages configureren
-        uses: actions/configure-pages@v5
-
-      - name: Bestanden uploaden
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy naar GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: src/claeren_policy_app/build/web
-
-      - name: Deployen naar GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: src/claeren_policy_app/build/web
+          publish_branch: gh-pages
