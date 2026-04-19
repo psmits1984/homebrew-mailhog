@@ -12,12 +12,13 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _usernameCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   bool _loading = false;
   bool _obscurePassword = true;
   String? _error;
+  String? _usernameError;
+  String? _passwordError;
 
   @override
   void dispose() {
@@ -26,8 +27,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
+  bool _validate() {
+    setState(() {
+      _usernameError = _usernameCtrl.text.trim().isEmpty ? 'Vul uw e-mailadres in' : null;
+      _passwordError = _passwordCtrl.text.isEmpty ? 'Vul uw wachtwoord in' : null;
+    });
+    return _usernameError == null && _passwordError == null;
+  }
+
   Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_validate()) return;
     setState(() { _loading = true; _error = null; });
 
     try {
@@ -69,43 +78,46 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(24),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          'Inloggen',
-                          style: Theme.of(context).textTheme.headlineMedium,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text('Inloggen', style: Theme.of(context).textTheme.headlineMedium),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Voer uw gegevens in om verder te gaan.',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 32),
+                      _buildInputField(
+                        controller: _usernameCtrl,
+                        hint: 'E-mailadres',
+                        keyboardType: TextInputType.emailAddress,
+                        errorText: _usernameError,
+                        prefixIcon: Icons.email_outlined,
+                      ),
+                      const SizedBox(height: 16),
+                      _buildInputField(
+                        controller: _passwordCtrl,
+                        hint: 'Wachtwoord',
+                        obscureText: _obscurePassword,
+                        errorText: _passwordError,
+                        prefixIcon: Icons.lock_outlined,
+                        suffix: IconButton(
+                          icon: Icon(
+                            _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                            color: AppColors.textSecondary,
+                          ),
+                          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Voer uw gegevens in om verder te gaan.',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        const SizedBox(height: 32),
-                        Container(
-                          height: 56,
-                          color: Colors.red,
-                          alignment: Alignment.center,
-                          child: const Text('EMAIL VELD', style: TextStyle(color: Colors.white)),
-                        ),
-                        const SizedBox(height: 16),
-                        Container(
-                          height: 56,
-                          color: Colors.blue,
-                          alignment: Alignment.center,
-                          child: const Text('WACHTWOORD VELD', style: TextStyle(color: Colors.white)),
-                        ),
-                        const SizedBox(height: 32),
-                        Container(
-                          height: 52,
-                          color: Colors.green,
-                          alignment: Alignment.center,
-                          child: const Text('INLOGGEN KNOP', style: TextStyle(color: Colors.white)),
-                        ),
+                      ),
+                      if (_error != null) ...[
+                        const SizedBox(height: 12),
+                        Text(_error!, style: const TextStyle(color: AppColors.error, fontSize: 13)),
                       ],
-                    ),
+                      const SizedBox(height: 32),
+                      _buildLoginButton(),
+                      const SizedBox(height: 24),
+                    ],
                   ),
                 ),
               ),
@@ -116,24 +128,100 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String hint,
+    TextInputType? keyboardType,
+    bool obscureText = false,
+    String? errorText,
+    IconData? prefixIcon,
+    Widget? suffix,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 56,
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: errorText != null ? AppColors.error : const Color(0xFFD1D5DB),
+              width: 1.5,
+            ),
+          ),
+          child: Row(
+            children: [
+              if (prefixIcon != null) ...[
+                const SizedBox(width: 12),
+                Icon(prefixIcon, color: AppColors.textSecondary, size: 20),
+              ],
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  keyboardType: keyboardType,
+                  obscureText: obscureText,
+                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 16),
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: const TextStyle(color: AppColors.textSecondary),
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              ),
+              if (suffix != null) suffix,
+            ],
+          ),
+        ),
+        if (errorText != null) ...[
+          const SizedBox(height: 4),
+          Text(errorText, style: const TextStyle(color: AppColors.error, fontSize: 12)),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return GestureDetector(
+      onTap: _loading ? null : _login,
+      child: Container(
+        height: 52,
+        decoration: BoxDecoration(
+          color: _loading ? AppColors.primary.withValues(alpha: 0.6) : AppColors.primary,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        alignment: Alignment.center,
+        child: _loading
+            ? const SizedBox(
+                height: 22,
+                width: 22,
+                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+              )
+            : const Text(
+                'Inloggen',
+                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+      ),
+    );
+  }
+
   Widget _buildLogo() => Column(
         children: [
           const Icon(Icons.shield_outlined, size: 64, color: Colors.white),
           const SizedBox(height: 12),
           Text(
             'Claeren',
-            style: Theme.of(context)
-                .textTheme
-                .headlineMedium
-                ?.copyWith(color: Colors.white),
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Colors.white),
           ),
           const SizedBox(height: 4),
           Text(
             'Verzekeringen & Advies',
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: Colors.white70),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70),
           ),
         ],
       );
