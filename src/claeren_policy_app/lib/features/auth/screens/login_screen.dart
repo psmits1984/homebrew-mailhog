@@ -84,82 +84,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                         const SizedBox(height: 32),
-                        TextFormField(
-                          controller: _usernameCtrl,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            labelText: 'E-mailadres',
-                            prefixIcon: const Icon(Icons.email_outlined),
-                            filled: true,
-                            fillColor: AppColors.background,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: Color(0xFFBBBBBB)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: Color(0xFFBBBBBB)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: AppColors.primary, width: 2),
-                            ),
-                          ),
-                          validator: (v) =>
-                              (v == null || v.isEmpty) ? 'Vul uw e-mailadres in' : null,
+                        Container(
+                          height: 56,
+                          color: Colors.red,
+                          alignment: Alignment.center,
+                          child: const Text('EMAIL VELD', style: TextStyle(color: Colors.white)),
                         ),
                         const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _passwordCtrl,
-                          obscureText: _obscurePassword,
-                          decoration: InputDecoration(
-                            labelText: 'Wachtwoord',
-                            prefixIcon: const Icon(Icons.lock_outlined),
-                            filled: true,
-                            fillColor: AppColors.background,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: Color(0xFFBBBBBB)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: Color(0xFFBBBBBB)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: AppColors.primary, width: 2),
-                            ),
-                            suffixIcon: IconButton(
-                              icon: Icon(_obscurePassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined),
-                              onPressed: () =>
-                                  setState(() => _obscurePassword = !_obscurePassword),
-                            ),
-                          ),
-                          validator: (v) =>
-                              (v == null || v.isEmpty) ? 'Vul uw wachtwoord in' : null,
+                        Container(
+                          height: 56,
+                          color: Colors.blue,
+                          alignment: Alignment.center,
+                          child: const Text('WACHTWOORD VELD', style: TextStyle(color: Colors.white)),
                         ),
-                        if (_error != null) ...[
-                          const SizedBox(height: 12),
-                          Text(
-                            _error!,
-                            style: const TextStyle(color: AppColors.error, fontSize: 13),
-                          ),
-                        ],
                         const SizedBox(height: 32),
-                        ElevatedButton(
-                          onPressed: _loading ? null : _login,
-                          child: _loading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                      color: Colors.white, strokeWidth: 2),
-                                )
-                              : const Text('Inloggen'),
+                        Container(
+                          height: 52,
+                          color: Colors.green,
+                          alignment: Alignment.center,
+                          child: const Text('INLOGGEN KNOP', style: TextStyle(color: Colors.white)),
                         ),
-                        const SizedBox(height: 24),
                       ],
                     ),
                   ),
