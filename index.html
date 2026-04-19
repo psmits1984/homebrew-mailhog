@@ -57,6 +57,18 @@
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Fix Flutter Web text input overlays on iOS Safari:
+       Flutter creates native HTML inputs over the canvas — hide them visually
+       but keep pointer-events so the keyboard still triggers on tap. */
+    flt-text-editing-host input,
+    flt-text-editing-host textarea {
+      opacity: 0.001 !important;
+      background: transparent !important;
+      -webkit-appearance: none !important;
+      border: none !important;
+      outline: none !important;
+    }
   </style>
 </head>
 <body>
