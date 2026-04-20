@@ -85,14 +85,26 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-var allowedOrigins = config.GetSection("Cors:AllowedOrigins").Get<string[]>()
-    ?? ["http://localhost:*"];
-
 builder.Services.AddCors(o =>
-    o.AddPolicy("MobileApp", p => p
-        .WithOrigins(allowedOrigins)
-        .AllowAnyHeader()
-        .AllowAnyMethod()));
+{
+    if (useMock)
+    {
+        // Mock/test modus: sta alle origins toe
+        o.AddPolicy("MobileApp", p => p
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+    }
+    else
+    {
+        var allowedOrigins = config.GetSection("Cors:AllowedOrigins").Get<string[]>()
+            ?? ["http://localhost:*"];
+        o.AddPolicy("MobileApp", p => p
+            .WithOrigins(allowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+    }
+});
 
 builder.Logging.AddConsole();
 
