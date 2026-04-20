@@ -10,7 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 var useMock = config.GetValue<bool>("Features:MockCcs");
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(
+        new System.Text.Json.Serialization.JsonStringEnumConverter()));
 
 if (useMock)
 {
