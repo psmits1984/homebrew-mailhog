@@ -117,6 +117,21 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty;
 });
 
+// Altijd CORS-headers meesturen (mock-modus = testomgeving)
+app.Use(async (ctx, next) =>
+{
+    ctx.Response.Headers["Access-Control-Allow-Origin"] = "*";
+    ctx.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+    ctx.Response.Headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
+    if (ctx.Request.Method == "OPTIONS")
+    {
+        ctx.Response.StatusCode = 200;
+        await ctx.Response.CompleteAsync();
+        return;
+    }
+    await next();
+});
+
 app.UseCors("MobileApp");
 app.UseAuthentication();
 app.UseAuthorization();
