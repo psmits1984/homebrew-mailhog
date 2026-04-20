@@ -437,7 +437,7 @@
       })
       .catch(function(err) {
         setLoading('login-btn', false, 'Inloggen');
-        showError('login-error', 'Verbindingsfout. Controleer uw internetverbinding.');
+        showError('login-error', 'Fout: ' + (err.message || err.name || 'onbekend'));
         console.error('Login error:', err);
       });
     }
