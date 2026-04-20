@@ -22,7 +22,8 @@ class AppTheme {
           centerTitle: false,
         ),
         cardTheme: CardThemeData(
-          elevation: 1,
+          elevation: 2,
+          surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           color: AppColors.surface,
         ),
