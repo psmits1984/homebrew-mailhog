@@ -342,6 +342,7 @@
       if (existing) {
         window.__claeren_jwt = existing;
         hideOverlay();
+        launchFlutter();
       }
     })();
 
@@ -382,11 +383,19 @@
       if (el) el.textContent = msg || '';
     }
 
+    // ─── Launch Flutter (deferred until after auth) ───────────────────────────
+    function launchFlutter() {
+      var s = document.createElement('script');
+      s.src = 'flutter_bootstrap.js';
+      document.body.appendChild(s);
+    }
+
     // ─── Auth success: store JWT and reveal Flutter ───────────────────────────
     function authSuccess(token) {
       localStorage.setItem(JWT_KEY, token);
       window.__claeren_jwt = token;
       hideOverlay();
+      launchFlutter();
     }
 
     // ─── Step 1: Login ────────────────────────────────────────────────────────
@@ -549,6 +558,5 @@
     });
   </script>
 
-  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
