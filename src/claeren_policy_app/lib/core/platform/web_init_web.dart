@@ -11,3 +11,7 @@ Future<String?> getWebInitialToken() async {
 void clearWebInitialToken() {
   js.context['__claeren_jwt'] = null;
 }
+
+void openUrl(String url) {
+  js.context.callMethod('open', [url, '_blank']);
+}
