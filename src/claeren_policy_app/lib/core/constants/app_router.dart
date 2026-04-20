@@ -8,9 +8,17 @@ import '../../features/policies/screens/policy_list_screen.dart';
 import '../../features/policies/screens/policy_detail_screen.dart';
 import '../../features/claims/screens/new_claim_screen.dart';
 import '../../features/naverrrekening/screens/naverrrekening_screen.dart';
+import '../storage/secure_storage.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/auth/login',
+  redirect: (context, state) async {
+    if (state.matchedLocation == '/auth/login') {
+      final token = await SecureStorage().getToken();
+      if (token != null) return '/entiteiten';
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/auth/login',
