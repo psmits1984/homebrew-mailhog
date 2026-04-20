@@ -35,7 +35,8 @@ jobs:
         run: |
           docker build \
             -t claeren-bff:${{ github.sha }} \
-            src/Claeren.PolicyApp.BFF/
+            -f Dockerfile \
+            .
 
       - name: Health check testen (mock modus)
         run: |
