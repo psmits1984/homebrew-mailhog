@@ -1,6 +1,7 @@
 using Claeren.PolicyApp.BFF.Models.Claim;
 using Claeren.PolicyApp.BFF.Models.Entity;
 using Claeren.PolicyApp.BFF.Models.Naverrrekening;
+using Claeren.PolicyApp.BFF.Models.Payment;
 using Claeren.PolicyApp.BFF.Models.Policy;
 
 namespace Claeren.PolicyApp.BFF.Mock;
@@ -9,9 +10,31 @@ public static class MockData
 {
     public static List<Entity> Entiteiten => new()
     {
-        new("ENT-001", "Claeren Holding B.V.", "12345678", EntityType.Zakelijk),
-        new("ENT-002", "Claeren Makelaardij B.V.", "87654321", EntityType.Zakelijk),
-        new("ENT-003", "Jan de Vries", string.Empty, EntityType.Particulier),
+        new("ENT-001", "Claeren Holding B.V.", "12345678", EntityType.Zakelijk,
+            Hoedanigheid: "Houdstermaatschappij",
+            Branche: "Financiële dienstverlening",
+            Adres: "Hertogendijerstraat 10",
+            Postcode: "5611 PA",
+            Woonplaats: "Eindhoven",
+            Email: "info@claeren.nl",
+            Telefoon: "040-123 4567"),
+
+        new("ENT-002", "Claeren Makelaardij B.V.", "87654321", EntityType.Zakelijk,
+            Hoedanigheid: "Assurantietussenpersoon",
+            Branche: "Financiële dienstverlening",
+            Adres: "Hertogendijerstraat 12",
+            Postcode: "5611 PA",
+            Woonplaats: "Eindhoven",
+            Email: "makelaardij@claeren.nl",
+            Telefoon: "040-123 4568"),
+
+        new("ENT-003", "Jan de Vries", string.Empty, EntityType.Particulier,
+            Adres: "Dorpstraat 15",
+            Postcode: "5611 AZ",
+            Woonplaats: "Eindhoven",
+            Email: "j.devries@claeren.nl",
+            Telefoon: "06-12 34 56 78",
+            Geboortedatum: new DateOnly(1980, 3, 15)),
     };
 
     public static List<Policy> Polissen => new()
@@ -79,6 +102,24 @@ public static class MockData
                 new(new DateTime(2023, 1, 15), "Jaarlijkse verlenging", 7_900.00m, 8_400.00m),
             }
         ),
+    };
+
+    public static List<Payment> Betalingen => new()
+    {
+        new("PAY-2024-001", "ENT-001", "POL-2024-001", "Bedrijfsaansprakelijkheid",
+            new DateTime(2024, 1, 15), 2_450.00m, PaymentStatus.Betaald, "F-2024-001"),
+        new("PAY-2024-002", "ENT-001", "POL-2024-002", "Opstalverzekering Kantoor",
+            new DateTime(2024, 3, 10), 1_200.00m, PaymentStatus.Betaald, "F-2024-002"),
+        new("PAY-2024-003", "ENT-001", "POL-2024-003", "Wagenpark Allrisk",
+            new DateTime(2024, 1, 20), 8_760.00m, PaymentStatus.Betaald, "F-2024-003"),
+        new("PAY-2024-004", "ENT-001", "POL-2024-003", "Wagenpark Allrisk (kwartaal)",
+            new DateTime(2024, 4, 20), 2_190.00m, PaymentStatus.Openstaand, "F-2024-004"),
+        new("PAY-2024-005", "ENT-002", "POL-2024-004", "Elektronicaverzekering",
+            new DateTime(2024, 6, 5), 540.00m, PaymentStatus.Betaald, "F-2024-005"),
+        new("PAY-2024-006", "ENT-002", "POL-2024-005", "Beroepsaansprakelijkheid",
+            new DateTime(2024, 1, 10), 3_100.00m, PaymentStatus.Betaald, "F-2024-006"),
+        new("PAY-2024-007", "ENT-002", "POL-2024-005", "Beroepsaansprakelijkheid",
+            new DateTime(2024, 4, 10), 775.00m, PaymentStatus.Mislukt, "F-2024-007"),
     };
 
     public static List<Claim> Claims => new()

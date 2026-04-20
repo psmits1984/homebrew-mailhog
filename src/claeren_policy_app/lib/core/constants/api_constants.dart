@@ -13,6 +13,7 @@ class ApiConstants {
   static String polissen(String entityId) => '/api/entiteiten/$entityId/polissen';
   static String polisDetail(String entityId, String polisNummer) =>
       '/api/entiteiten/$entityId/polissen/$polisNummer';
+  static String betalingen(String entityId) => '/api/entiteiten/$entityId/betalingen';
   static String claims(String entityId) => '/api/entiteiten/$entityId/claims';
   static String naverrrekening(String entityId) => '/api/entiteiten/$entityId/naverrrekening';
   static String navAntwoorden(String entityId, String uitvraagId) =>

@@ -20,6 +20,8 @@ class AppTheme {
           foregroundColor: Colors.white,
           elevation: 0,
           centerTitle: false,
+          iconTheme: IconThemeData(color: Colors.white),
+          actionsIconTheme: IconThemeData(color: Colors.white),
         ),
         cardTheme: CardThemeData(
           elevation: 2,

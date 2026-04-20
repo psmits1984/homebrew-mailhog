@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/storage/secure_storage.dart';
 import '../models/policy_model.dart';
 import '../repository/policy_repository.dart';
 
@@ -24,9 +25,31 @@ class PolicyListScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Mijn polissen'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => context.go('/entiteiten'),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_outlined, color: Colors.white),
+            tooltip: 'Mijn gegevens',
+            onPressed: () =>
+                context.push('/entiteiten/$entityId/profiel'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.receipt_long_outlined, color: Colors.white),
+            tooltip: 'Betaalbewijzen',
+            onPressed: () =>
+                context.push('/entiteiten/$entityId/betalingen'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.white),
+            tooltip: 'Uitloggen',
+            onPressed: () async {
+              await ref.read(secureStorageProvider).clearAll();
+              if (context.mounted) context.go('/auth/login');
+            },
+          ),
+        ],
       ),
       body: polissenAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),

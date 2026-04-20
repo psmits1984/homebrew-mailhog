@@ -4,10 +4,13 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/two_factor_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
 import '../../features/entity/screens/entity_selection_screen.dart';
+import '../../features/entity/screens/entity_detail_screen.dart';
 import '../../features/policies/screens/policy_list_screen.dart';
 import '../../features/policies/screens/policy_detail_screen.dart';
 import '../../features/claims/screens/new_claim_screen.dart';
 import '../../features/naverrrekening/screens/naverrrekening_screen.dart';
+import '../../features/payments/screens/payments_screen.dart';
+import '../../features/payments/screens/sepa_mandate_screen.dart';
 import '../storage/secure_storage.dart';
 
 final appRouter = GoRouter(
@@ -43,6 +46,24 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/entiteiten',
       builder: (_, __) => const EntitySelectionScreen(),
+    ),
+    GoRoute(
+      path: '/entiteiten/:entityId/profiel',
+      builder: (_, state) => EntityDetailScreen(
+        entityId: state.pathParameters['entityId']!,
+      ),
+    ),
+    GoRoute(
+      path: '/entiteiten/:entityId/betalingen',
+      builder: (_, state) => PaymentsScreen(
+        entityId: state.pathParameters['entityId']!,
+      ),
+    ),
+    GoRoute(
+      path: '/entiteiten/:entityId/sepa',
+      builder: (_, state) => SepaMandateScreen(
+        entityId: state.pathParameters['entityId']!,
+      ),
     ),
     GoRoute(
       path: '/polissen/:entityId',

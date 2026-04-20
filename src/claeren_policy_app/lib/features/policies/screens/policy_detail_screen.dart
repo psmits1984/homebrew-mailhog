@@ -72,10 +72,14 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(widget.polisNummer),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => context.pop(),
+            ),
             actions: [
               if (polisblad != null)
                 IconButton(
-                  icon: const Icon(Icons.download_outlined),
+                  icon: const Icon(Icons.download_outlined, color: Colors.white),
                   tooltip: 'Polisblad downloaden',
                   onPressed: () => _download(polisblad),
                 ),
