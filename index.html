@@ -74,31 +74,489 @@
     flt-text-editing-host textarea {
       opacity: 0.001 !important;
     }
+
+    /* ─── Auth Overlay ─────────────────────────────────────────────────────── */
+    #auth-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      background: #003A6E;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Dark blue header section */
+    .auth-header {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 56px 24px 40px;
+      background: #003A6E;
+    }
+
+    .auth-shield {
+      width: 72px;
+      height: 72px;
+      margin-bottom: 16px;
+    }
+
+    .auth-title {
+      color: #ffffff;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    .auth-subtitle {
+      color: rgba(255,255,255,0.65);
+      font-size: 14px;
+      margin: 6px 0 0;
+      letter-spacing: 0.2px;
+    }
+
+    /* White card section */
+    .auth-card {
+      flex: 1;
+      background: #F5F7FA;
+      border-radius: 24px 24px 0 0;
+      padding: 32px 24px 48px;
+    }
+
+    .auth-form-title {
+      color: #003A6E;
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0 0 24px;
+    }
+
+    .auth-field {
+      margin-bottom: 16px;
+    }
+
+    .auth-field label {
+      display: block;
+      color: #003A6E;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      letter-spacing: 0.2px;
+    }
+
+    /* Native inputs — reset the global rule that makes them transparent */
+    .auth-field input {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px 16px;
+      font-size: 16px; /* 16 px prevents iOS auto-zoom */
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #1a1a2e !important;
+      background: #ffffff !important;
+      border: 1.5px solid #dde3ec !important;
+      border-radius: 12px !important;
+      outline: none !important;
+      box-shadow: none !important;
+      transition: border-color 0.15s;
+    }
+
+    .auth-field input:focus {
+      border-color: #003A6E !important;
+    }
+
+    .auth-field input::placeholder {
+      color: #a0aab4;
+    }
+
+    .auth-error {
+      color: #c0392b;
+      font-size: 13px;
+      margin: -8px 0 12px;
+      min-height: 18px;
+    }
+
+    .auth-btn {
+      -webkit-appearance: none;
+      appearance: none;
+      display: block;
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #ffffff;
+      background: #E8A020;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 8px;
+      letter-spacing: 0.3px;
+      transition: opacity 0.15s;
+    }
+
+    .auth-btn:active { opacity: 0.85; }
+    .auth-btn:disabled { opacity: 0.55; cursor: default; }
+
+    .auth-back-link {
+      display: inline-block;
+      margin-top: 16px;
+      color: #003A6E;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: underline;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: inherit;
+    }
+
+    .auth-step { display: none; }
+    .auth-step.active { display: block; }
+
+    .auth-info-text {
+      color: #5a6475;
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0 0 20px;
+    }
+
+    .auth-spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
   </style>
 </head>
 <body>
+  <!-- Flutter loading spinner (underneath the auth overlay) -->
   <div id="loading">
     <div class="spinner"></div>
     <div id="loading-text">Claeren laden...</div>
   </div>
 
+  <!-- ─── HTML Auth Overlay ────────────────────────────────────────────────── -->
+  <div id="auth-overlay">
+    <!-- Header -->
+    <div class="auth-header">
+      <!-- Shield SVG icon -->
+      <svg class="auth-shield" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M36 4L8 16v20c0 16.6 11.9 32.1 28 36 16.1-3.9 28-19.4 28-36V16L36 4z"
+              fill="rgba(255,255,255,0.12)" stroke="#E8A020" stroke-width="2.5"/>
+        <path d="M36 4L8 16v20c0 16.6 11.9 32.1 28 36 16.1-3.9 28-19.4 28-36V16L36 4z"
+              fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+        <path d="M24 36l8 8 16-16" stroke="#E8A020" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h1 class="auth-title">Claeren</h1>
+      <p class="auth-subtitle">Verzekeringsportal</p>
+    </div>
+
+    <!-- Card -->
+    <div class="auth-card">
+
+      <!-- Step 1: Login -->
+      <div id="step-login" class="auth-step active">
+        <h2 class="auth-form-title">Inloggen</h2>
+        <div class="auth-field">
+          <label for="login-username">Gebruikersnaam</label>
+          <input type="text" id="login-username" placeholder="Uw gebruikersnaam"
+                 autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+        </div>
+        <div class="auth-field">
+          <label for="login-password">Wachtwoord</label>
+          <input type="password" id="login-password" placeholder="Uw wachtwoord"
+                 autocomplete="current-password">
+        </div>
+        <div id="login-error" class="auth-error"></div>
+        <button id="login-btn" class="auth-btn" onclick="handleLogin()">Inloggen</button>
+      </div>
+
+      <!-- Step 2: Two-factor -->
+      <div id="step-2fa" class="auth-step">
+        <h2 class="auth-form-title">Tweestapsverificatie</h2>
+        <p class="auth-info-text">
+          Voer de verificatiecode in die naar uw telefoon of e-mail is verstuurd.
+        </p>
+        <div class="auth-field">
+          <label for="twofa-code">Verificatiecode</label>
+          <input type="text" id="twofa-code" placeholder="6-cijferige code"
+                 inputmode="numeric" pattern="[0-9]*" maxlength="6"
+                 autocomplete="one-time-code">
+        </div>
+        <div id="twofa-error" class="auth-error"></div>
+        <button id="twofa-btn" class="auth-btn" onclick="handleTwoFactor()">Bevestigen</button>
+        <button class="auth-back-link" onclick="showStep('login')">Terug naar inloggen</button>
+      </div>
+
+      <!-- Step 3: Onboarding -->
+      <div id="step-onboarding" class="auth-step">
+        <h2 class="auth-form-title">Profiel aanvullen</h2>
+        <p class="auth-info-text">
+          Vul uw gegevens in om uw account te activeren.
+        </p>
+        <div class="auth-field">
+          <label for="onb-dob">Geboortedatum</label>
+          <input type="text" id="onb-dob" placeholder="DD-MM-JJJJ"
+                 inputmode="numeric" autocomplete="bday">
+        </div>
+        <div class="auth-field">
+          <label for="onb-postcode">Postcode</label>
+          <input type="text" id="onb-postcode" placeholder="1234 AB"
+                 autocomplete="postal-code" autocapitalize="characters">
+        </div>
+        <div class="auth-field">
+          <label for="onb-huisnummer">Huisnummer</label>
+          <input type="text" id="onb-huisnummer" placeholder="bijv. 12A"
+                 inputmode="text">
+        </div>
+        <div id="onboarding-error" class="auth-error"></div>
+        <button id="onboarding-btn" class="auth-btn" onclick="handleOnboarding()">Account activeren</button>
+      </div>
+
+    </div><!-- /auth-card -->
+  </div><!-- /auth-overlay -->
+
   <script>
-    window.addEventListener('flutter-first-frame', () => {
+    // ─── Constants ────────────────────────────────────────────────────────────
+    var API_BASE = 'https://homebrew-mailhog-production.up.railway.app';
+    var JWT_KEY  = 'claeren_jwt';
+
+    // ─── Per-step session state ───────────────────────────────────────────────
+    var _sessionToken        = null;
+    var _requiresOnboarding  = false;
+
+    // ─── Boot: skip overlay if JWT already present ────────────────────────────
+    (function() {
+      var existing = localStorage.getItem(JWT_KEY);
+      if (existing) {
+        window.__claeren_jwt = existing;
+        hideOverlay();
+        launchFlutter();
+      }
+    })();
+
+    // ─── Logout helper callable from Flutter via JS interop ───────────────────
+    window.claerenLogout = function() {
+      localStorage.removeItem(JWT_KEY);
+      window.__claeren_jwt = null;
+      location.reload();
+    };
+
+    // ─── Utility: show a step ─────────────────────────────────────────────────
+    function showStep(name) {
+      var steps = document.querySelectorAll('.auth-step');
+      for (var i = 0; i < steps.length; i++) {
+        steps[i].classList.remove('active');
+      }
+      document.getElementById('step-' + name).classList.add('active');
+    }
+
+    // ─── Utility: hide the whole overlay ─────────────────────────────────────
+    function hideOverlay() {
+      var overlay = document.getElementById('auth-overlay');
+      if (overlay) overlay.style.display = 'none';
+    }
+
+    // ─── Utility: set button loading state ───────────────────────────────────
+    function setLoading(btnId, loading, label) {
+      var btn = document.getElementById(btnId);
+      btn.disabled = loading;
+      btn.innerHTML = loading
+        ? '<span class="auth-spinner"></span>Even geduld...'
+        : label;
+    }
+
+    // ─── Utility: show error ──────────────────────────────────────────────────
+    function showError(elementId, msg) {
+      var el = document.getElementById(elementId);
+      if (el) el.textContent = msg || '';
+    }
+
+    // ─── Launch Flutter (deferred until after auth) ───────────────────────────
+    function launchFlutter() {
+      var s = document.createElement('script');
+      s.src = 'flutter_bootstrap.js';
+      document.body.appendChild(s);
+    }
+
+    // ─── Auth success: store JWT and reveal Flutter ───────────────────────────
+    function authSuccess(token) {
+      localStorage.setItem(JWT_KEY, token);
+      window.__claeren_jwt = token;
+      hideOverlay();
+      launchFlutter();
+    }
+
+    // ─── Step 1: Login ────────────────────────────────────────────────────────
+    function handleLogin() {
+      showError('login-error', '');
+      var username = document.getElementById('login-username').value.trim();
+      var password = document.getElementById('login-password').value;
+
+      if (!username || !password) {
+        showError('login-error', 'Vul uw gebruikersnaam en wachtwoord in.');
+        return;
+      }
+
+      setLoading('login-btn', true, 'Inloggen');
+
+      fetch(API_BASE + '/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username, password: password })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        setLoading('login-btn', false, 'Inloggen');
+
+        if (data.token) {
+          authSuccess(data.token);
+          return;
+        }
+
+        if (data.requiresTwoFactor && data.twoFactorSessionToken) {
+          _sessionToken       = data.twoFactorSessionToken;
+          _requiresOnboarding = !!data.requiresOnboarding;
+          showStep('2fa');
+          return;
+        }
+
+        // No token and no 2FA route — treat as error
+        showError('login-error', data.message || data.errorMessage || 'Inloggen mislukt. Controleer uw gegevens.');
+      })
+      .catch(function(err) {
+        setLoading('login-btn', false, 'Inloggen');
+        showError('login-error', 'Verbindingsfout. Controleer uw internetverbinding.');
+        console.error('Login error:', err);
+      });
+    }
+
+    // ─── Step 2: Two-factor ───────────────────────────────────────────────────
+    function handleTwoFactor() {
+      showError('twofa-error', '');
+      var code = document.getElementById('twofa-code').value.trim();
+
+      if (!code || code.length < 4) {
+        showError('twofa-error', 'Voer de verificatiecode in.');
+        return;
+      }
+
+      setLoading('twofa-btn', true, 'Bevestigen');
+
+      fetch(API_BASE + '/api/auth/2fa/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionToken: _sessionToken, code: code })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        setLoading('twofa-btn', false, 'Bevestigen');
+
+        if (data.token) {
+          authSuccess(data.token);
+          return;
+        }
+
+        if (data.requiresOnboarding && data.twoFactorSessionToken) {
+          _sessionToken = data.twoFactorSessionToken;
+          showStep('onboarding');
+          return;
+        }
+
+        // Carry over onboarding flag from login step (some APIs omit it in 2FA response)
+        if (_requiresOnboarding && _sessionToken) {
+          showStep('onboarding');
+          return;
+        }
+
+        showError('twofa-error', data.message || data.errorMessage || 'Ongeldige code. Probeer opnieuw.');
+      })
+      .catch(function(err) {
+        setLoading('twofa-btn', false, 'Bevestigen');
+        showError('twofa-error', 'Verbindingsfout. Controleer uw internetverbinding.');
+        console.error('2FA error:', err);
+      });
+    }
+
+    // ─── Step 3: Onboarding ───────────────────────────────────────────────────
+    function handleOnboarding() {
+      showError('onboarding-error', '');
+      var dob        = document.getElementById('onb-dob').value.trim();
+      var postcode   = document.getElementById('onb-postcode').value.trim();
+      var huisnummer = document.getElementById('onb-huisnummer').value.trim();
+
+      if (!dob || !postcode || !huisnummer) {
+        showError('onboarding-error', 'Vul alle velden in.');
+        return;
+      }
+
+      setLoading('onboarding-btn', true, 'Account activeren');
+
+      fetch(API_BASE + '/api/auth/onboarding/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionToken: _sessionToken,
+          geboortedatum: dob,
+          postcode: postcode,
+          huisnummer: huisnummer
+        })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        setLoading('onboarding-btn', false, 'Account activeren');
+
+        if (data.success && data.token) {
+          authSuccess(data.token);
+          return;
+        }
+
+        showError('onboarding-error', data.errorMessage || data.message || 'Activatie mislukt. Controleer uw gegevens.');
+      })
+      .catch(function(err) {
+        setLoading('onboarding-btn', false, 'Account activeren');
+        showError('onboarding-error', 'Verbindingsfout. Controleer uw internetverbinding.');
+        console.error('Onboarding error:', err);
+      });
+    }
+
+    // ─── Allow Enter key to submit ────────────────────────────────────────────
+    document.addEventListener('keydown', function(e) {
+      if (e.key !== 'Enter') return;
+      var active = document.querySelector('.auth-step.active');
+      if (!active) return;
+      if (active.id === 'step-login')      handleLogin();
+      if (active.id === 'step-2fa')        handleTwoFactor();
+      if (active.id === 'step-onboarding') handleOnboarding();
+    });
+
+    // ─── Flutter loading events ───────────────────────────────────────────────
+    window.addEventListener('flutter-first-frame', function() {
       document.getElementById('loading').remove();
     });
 
     // Toon foutmelding als Flutter niet start binnen 60 seconden
-    setTimeout(() => {
-      const el = document.getElementById('loading-text');
+    setTimeout(function() {
+      var el = document.getElementById('loading-text');
       if (el) el.textContent = 'Laadtijd overschreden. Ververs de pagina.';
     }, 60000);
 
-    window.addEventListener('error', (e) => {
-      const el = document.getElementById('loading-text');
+    window.addEventListener('error', function(e) {
+      var el = document.getElementById('loading-text');
       if (el) el.textContent = 'Fout: ' + (e.message || 'onbekend');
     });
   </script>
 
-  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
