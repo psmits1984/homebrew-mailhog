@@ -27,92 +27,126 @@ class PolicyDetailScreen extends ConsumerWidget {
     final currency = NumberFormat.currency(locale: 'nl_NL', symbol: '€');
     final dateFormat = DateFormat('dd-MM-yyyy');
 
-    return Scaffold(
-      appBar: AppBar(title: Text(polisNummer)),
-      body: detailAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => const Center(child: Text('Polisdetail kon niet worden geladen.')),
-        data: (detail) {
-          if (detail == null) {
-            return const Center(child: Text('Polis niet gevonden.'));
-          }
-          return DefaultTabController(
-            length: 3,
-            child: Column(
+    return detailAsync.when(
+      loading: () => Scaffold(
+        appBar: AppBar(title: Text(polisNummer)),
+        body: const Center(child: CircularProgressIndicator()),
+      ),
+      error: (e, _) => Scaffold(
+        appBar: AppBar(title: Text(polisNummer)),
+        body: const Center(child: Text('Polisdetail kon niet worden geladen.')),
+      ),
+      data: (detail) {
+        if (detail == null) {
+          return Scaffold(
+            appBar: AppBar(title: Text(polisNummer)),
+            body: const Center(child: Text('Polis niet gevonden.')),
+          );
+        }
+        return DefaultTabController(
+          length: 3,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(polisNummer),
+              bottom: _PolicyTabHeader(
+                detail: detail,
+                currency: currency,
+                dateFormat: dateFormat,
+              ),
+            ),
+            body: TabBarView(
               children: [
-                _PolicyHeader(detail: detail, currency: currency, dateFormat: dateFormat),
-                const TabBar(
-                  labelColor: AppColors.primary,
-                  indicatorColor: AppColors.primary,
-                  tabs: [
-                    Tab(text: 'Dekking'),
-                    Tab(text: 'Documenten'),
-                    Tab(text: 'Historie'),
-                  ],
-                ),
-                Expanded(
-                  child: TabBarView(
-                    children: [
-                      _DekkingTab(dekkingen: detail.dekkingen, currency: currency),
-                      _DocumentenTab(documenten: detail.documenten, dateFormat: dateFormat),
-                      _HistorieTab(historie: detail.historie, currency: currency, dateFormat: dateFormat),
-                    ],
-                  ),
-                ),
+                _DekkingTab(dekkingen: detail.dekkingen, currency: currency),
+                _DocumentenTab(
+                    documenten: detail.documenten, dateFormat: dateFormat),
+                _HistorieTab(
+                    historie: detail.historie,
+                    currency: currency,
+                    dateFormat: dateFormat),
               ],
             ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/polissen/$entityId/$polisNummer/claim'),
-        icon: const Icon(Icons.report_problem_outlined),
-        label: const Text('Schade melden'),
-        backgroundColor: AppColors.primary,
-      ),
+            floatingActionButton: FloatingActionButton.extended(
+              onPressed: () =>
+                  context.push('/polissen/$entityId/$polisNummer/claim'),
+              icon: const Icon(Icons.report_problem_outlined),
+              label: const Text('Schade melden'),
+              backgroundColor: AppColors.accent,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
-class _PolicyHeader extends StatelessWidget {
+class _PolicyTabHeader extends StatelessWidget implements PreferredSizeWidget {
   final PolicyDetailModel detail;
   final NumberFormat currency;
   final DateFormat dateFormat;
 
-  const _PolicyHeader({required this.detail, required this.currency, required this.dateFormat});
+  const _PolicyTabHeader(
+      {required this.detail,
+      required this.currency,
+      required this.dateFormat});
 
   @override
-  Widget build(BuildContext context) => Container(
-        color: AppColors.primary,
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(detail.omschrijving,
+  Size get preferredSize => const Size.fromHeight(152);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                detail.omschrijving,
                 style: const TextStyle(
-                    color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 4),
-            Text(detail.maatschappij,
-                style: const TextStyle(color: Colors.white70, fontSize: 13)),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                _InfoChip(
-                    label: currency.format(detail.jaarPremie),
-                    sublabel: 'per jaar'),
-                const SizedBox(width: 12),
-                _InfoChip(
-                    label: currency.format(detail.eigenRisico),
-                    sublabel: 'eigen risico'),
-                const SizedBox(width: 12),
-                _InfoChip(
-                    label: dateFormat.format(detail.vervaldatum),
-                    sublabel: 'vervaldatum'),
-              ],
-            ),
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 2),
+              Text(detail.maatschappij,
+                  style: const TextStyle(color: Colors.white70, fontSize: 12)),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  _InfoChip(
+                      label: currency.format(detail.jaarPremie),
+                      sublabel: 'per jaar'),
+                  const SizedBox(width: 10),
+                  _InfoChip(
+                      label: currency.format(detail.eigenRisico),
+                      sublabel: 'eigen risico'),
+                  const SizedBox(width: 10),
+                  _InfoChip(
+                      label: dateFormat.format(detail.vervaldatum),
+                      sublabel: 'vervaldatum'),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const TabBar(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white60,
+          indicatorColor: AppColors.accent,
+          indicatorWeight: 3,
+          tabs: [
+            Tab(text: 'Dekking'),
+            Tab(text: 'Documenten'),
+            Tab(text: 'Historie'),
           ],
         ),
-      );
+      ],
+    );
+  }
 }
 
 class _InfoChip extends StatelessWidget {
@@ -131,7 +165,9 @@ class _InfoChip extends StatelessWidget {
           children: [
             Text(label,
                 style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12)),
             Text(sublabel,
                 style: const TextStyle(color: Colors.white70, fontSize: 10)),
           ],
@@ -179,14 +215,11 @@ class _DocumentenTab extends StatelessWidget {
                     leading: const Icon(Icons.picture_as_pdf_outlined,
                         color: AppColors.error),
                     title: Text(d.naam),
-                    subtitle: Text(
-                        '${d.type} · ${dateFormat.format(d.datum)}',
+                    subtitle: Text('${d.type} · ${dateFormat.format(d.datum)}',
                         style: Theme.of(context).textTheme.bodySmall),
                     trailing: const Icon(Icons.download_outlined,
                         color: AppColors.primary),
-                    onTap: () {
-                      // TODO: open document via URL launcher
-                    },
+                    onTap: () {},
                   ),
                 ))
             .toList(),
