@@ -1,6 +1,8 @@
 using Claeren.PolicyApp.BFF.Models.Claim;
+using Claeren.PolicyApp.BFF.Models.Compliance;
 using Claeren.PolicyApp.BFF.Models.Entity;
 using Claeren.PolicyApp.BFF.Models.Naverrrekening;
+using Claeren.PolicyApp.BFF.Models.Offerte;
 using Claeren.PolicyApp.BFF.Models.Payment;
 using Claeren.PolicyApp.BFF.Models.Policy;
 
@@ -181,5 +183,67 @@ public static class MockData
     {
         new("user-001", "j.devries@claeren.nl", "Welkom01!", "ENT-003"),
         new("user-002", "zakelijk@claeren.nl", "Welkom02!", "ENT-001", "ENT-002"),
+    };
+
+    public static List<Offerte> Offertes => new()
+    {
+        new("OFF-2025-001", "ENT-001",
+            "OFF-2025-001", "Bedrijfsschadeverzekering uitbreiding",
+            RelatieSoort.Zakelijk, OfferteStatus.Verzonden,
+            "BS", "Bedrijfsschade + Extra kosten",
+            3_850.00m,
+            new DateOnly(2025, 5, 1), new DateOnly(2025, 6, 30),
+            new DateTime(2025, 4, 10),
+            KvkNummer: "12345678",
+            ContactpersoonEmail: "info@claeren.nl"),
+
+        new("OFF-2025-002", "ENT-001",
+            "OFF-2025-002", "Cyber & Dataverzekering",
+            RelatieSoort.Zakelijk, OfferteStatus.Concept,
+            "CYBER", "Cyber liability + Data recovery",
+            2_200.00m,
+            new DateOnly(2025, 6, 1), new DateOnly(2025, 7, 31),
+            new DateTime(2025, 4, 15),
+            KvkNummer: "12345678",
+            ContactpersoonEmail: "info@claeren.nl"),
+
+        new("OFF-2025-003", "ENT-002",
+            "OFF-2025-003", "Beroepsaansprakelijkheid verlenging",
+            RelatieSoort.Zakelijk, OfferteStatus.Geaccordeerd,
+            "BAV", "Beroepsaansprakelijkheid tot €2.5M",
+            3_250.00m,
+            new DateOnly(2025, 1, 1), new DateOnly(2026, 1, 1),
+            new DateTime(2025, 3, 1),
+            KvkNummer: "87654321",
+            ContactpersoonEmail: "makelaardij@claeren.nl"),
+
+        new("OFF-2025-004", "ENT-002",
+            "OFF-2025-004", "Wagenpark uitbreiding 3 voertuigen",
+            RelatieSoort.Zakelijk, OfferteStatus.Geweigerd,
+            "AUTO", "WA + Allrisk 3 voertuigen",
+            4_100.00m,
+            new DateOnly(2025, 3, 1), new DateOnly(2025, 4, 30),
+            new DateTime(2025, 2, 20),
+            KvkNummer: "87654321",
+            ContactpersoonEmail: "makelaardij@claeren.nl"),
+
+        new("OFF-2025-005", "ENT-003",
+            "OFF-2025-005", "Overlijdensrisicoverzekering",
+            RelatieSoort.Particulier, OfferteStatus.Verzonden,
+            "ORV", "Overlijdensrisico €250.000",
+            680.00m,
+            new DateOnly(2025, 5, 15), new DateOnly(2025, 6, 30),
+            new DateTime(2025, 4, 18),
+            ContactpersoonEmail: "j.devries@claeren.nl"),
+
+        new("OFF-2025-006", "ENT-001",
+            "OFF-2025-006", "Gebouwenverzekering Hoofdkantoor",
+            RelatieSoort.Zakelijk, OfferteStatus.Getekend,
+            "OPSTAL", "All-risk opstal met glasdekking",
+            5_600.00m,
+            new DateOnly(2025, 1, 1), new DateOnly(2026, 1, 1),
+            new DateTime(2024, 12, 1),
+            KvkNummer: "12345678",
+            ContactpersoonEmail: "info@claeren.nl"),
     };
 }
