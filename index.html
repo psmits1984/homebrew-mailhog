@@ -58,23 +58,18 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Fix Flutter Web text input on iOS Safari:
-       Remove native iOS gray background and border from all HTML inputs
-       so Container decoration shows through. Text color stays visible. */
+    /* Flutter Web (CanvasKit): het tekstveld wordt op canvas getekend.
+       De HTML-input van flt-text-editing-host is alleen voor toetsenbordinput;
+       maak hem visueel onzichtbaar maar houd hem volledig interactief zodat
+       iOS Safari het virtuele toetsenbord toont. */
     input, textarea {
       -webkit-appearance: none !important;
       background: transparent !important;
+      color: transparent !important;
+      caret-color: transparent !important;
       border: none !important;
       outline: none !important;
       box-shadow: none !important;
-    }
-
-    /* flt-text-editing-host: keep interactive (opacity must stay 1 for iOS
-       keyboard to appear), only hide the text visually since Flutter draws it */
-    flt-text-editing-host input,
-    flt-text-editing-host textarea {
-      color: transparent !important;
-      caret-color: transparent !important;
     }
 
     /* ─── Auth Overlay ─────────────────────────────────────────────────────── */
