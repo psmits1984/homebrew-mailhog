@@ -78,6 +78,7 @@ class _SepaMandateScreenState extends State<SepaMandateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('SEPA Incassomachtiging'),
         leading: IconButton(

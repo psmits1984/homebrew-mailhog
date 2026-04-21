@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import '../../../core/constants/api_constants.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/platform/web_init.dart';
 import '../models/payment_model.dart';
 import '../repository/payment_repository.dart';
 
@@ -22,6 +24,7 @@ class PaymentsScreen extends ConsumerWidget {
     final dateFormat = DateFormat('dd-MM-yyyy');
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Betaalbewijzen'),
         leading: IconButton(
@@ -40,9 +43,12 @@ class PaymentsScreen extends ConsumerWidget {
               Text('Betalingen konden niet worden geladen',
                   style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () => ref.invalidate(betalingenProvider(entityId)),
-                child: const Text('Opnieuw'),
+              SizedBox(
+                width: 200,
+                child: ElevatedButton(
+                  onPressed: () => ref.invalidate(betalingenProvider(entityId)),
+                  child: const Text('Opnieuw'),
+                ),
               ),
             ],
           ),
@@ -152,6 +158,12 @@ class _PaymentCard extends StatelessWidget {
         PaymentStatus.mislukt => Icons.error_outline,
       };
 
+  void _downloadFactuur() {
+    if (payment.factuurDownloadUrl.isNotEmpty) {
+      openUrl('${ApiConstants.baseUrl}${payment.factuurDownloadUrl}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Card(
         margin: const EdgeInsets.only(bottom: 10),
@@ -213,6 +225,25 @@ class _PaymentCard extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodySmall),
                 ],
               ),
+              if (payment.factuurDownloadUrl.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                const Divider(height: 1),
+                const SizedBox(height: 4),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton.icon(
+                    icon: const Icon(Icons.download_outlined, size: 16),
+                    label: const Text('Factuur downloaden'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.primary,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      textStyle: const TextStyle(fontSize: 12),
+                    ),
+                    onPressed: _downloadFactuur,
+                  ),
+                ),
+              ],
             ],
           ),
         ),

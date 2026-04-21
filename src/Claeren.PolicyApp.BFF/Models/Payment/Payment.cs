@@ -8,7 +8,8 @@ public record Payment(
     DateTime Datum,
     decimal Bedrag,
     PaymentStatus Status,
-    string FactuurNummer
+    string FactuurNummer,
+    string FactuurDownloadUrl
 );
 
 public enum PaymentStatus { Betaald, Openstaand, Mislukt }

@@ -7,6 +7,7 @@ class PaymentModel {
   final double bedrag;
   final PaymentStatus status;
   final String factuurNummer;
+  final String factuurDownloadUrl;
 
   const PaymentModel({
     required this.id,
@@ -17,6 +18,7 @@ class PaymentModel {
     required this.bedrag,
     required this.status,
     required this.factuurNummer,
+    required this.factuurDownloadUrl,
   });
 
   factory PaymentModel.fromJson(Map<String, dynamic> json) => PaymentModel(
@@ -28,6 +30,7 @@ class PaymentModel {
         bedrag: (json['bedrag'] as num).toDouble(),
         status: PaymentStatus.fromString(json['status'] as String),
         factuurNummer: json['factuurNummer'] as String,
+        factuurDownloadUrl: json['factuurDownloadUrl'] as String? ?? '',
       );
 }
 

@@ -16,6 +16,7 @@ class EntityDetailScreen extends ConsumerWidget {
     final dateFormat = DateFormat('dd-MM-yyyy');
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Mijn gegevens'),
         leading: IconButton(

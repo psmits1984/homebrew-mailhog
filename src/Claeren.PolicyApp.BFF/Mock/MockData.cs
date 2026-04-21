@@ -107,19 +107,26 @@ public static class MockData
     public static List<Payment> Betalingen => new()
     {
         new("PAY-2024-001", "ENT-001", "POL-2024-001", "Bedrijfsaansprakelijkheid",
-            new DateTime(2024, 1, 15), 2_450.00m, PaymentStatus.Betaald, "F-2024-001"),
+            new DateTime(2024, 1, 15), 2_450.00m, PaymentStatus.Betaald, "F-2024-001",
+            "/api/facturen/PAY-2024-001"),
         new("PAY-2024-002", "ENT-001", "POL-2024-002", "Opstalverzekering Kantoor",
-            new DateTime(2024, 3, 10), 1_200.00m, PaymentStatus.Betaald, "F-2024-002"),
+            new DateTime(2024, 3, 10), 1_200.00m, PaymentStatus.Betaald, "F-2024-002",
+            "/api/facturen/PAY-2024-002"),
         new("PAY-2024-003", "ENT-001", "POL-2024-003", "Wagenpark Allrisk",
-            new DateTime(2024, 1, 20), 8_760.00m, PaymentStatus.Betaald, "F-2024-003"),
+            new DateTime(2024, 1, 20), 8_760.00m, PaymentStatus.Betaald, "F-2024-003",
+            "/api/facturen/PAY-2024-003"),
         new("PAY-2024-004", "ENT-001", "POL-2024-003", "Wagenpark Allrisk (kwartaal)",
-            new DateTime(2024, 4, 20), 2_190.00m, PaymentStatus.Openstaand, "F-2024-004"),
+            new DateTime(2024, 4, 20), 2_190.00m, PaymentStatus.Openstaand, "F-2024-004",
+            "/api/facturen/PAY-2024-004"),
         new("PAY-2024-005", "ENT-002", "POL-2024-004", "Elektronicaverzekering",
-            new DateTime(2024, 6, 5), 540.00m, PaymentStatus.Betaald, "F-2024-005"),
+            new DateTime(2024, 6, 5), 540.00m, PaymentStatus.Betaald, "F-2024-005",
+            "/api/facturen/PAY-2024-005"),
         new("PAY-2024-006", "ENT-002", "POL-2024-005", "Beroepsaansprakelijkheid",
-            new DateTime(2024, 1, 10), 3_100.00m, PaymentStatus.Betaald, "F-2024-006"),
+            new DateTime(2024, 1, 10), 3_100.00m, PaymentStatus.Betaald, "F-2024-006",
+            "/api/facturen/PAY-2024-006"),
         new("PAY-2024-007", "ENT-002", "POL-2024-005", "Beroepsaansprakelijkheid",
-            new DateTime(2024, 4, 10), 775.00m, PaymentStatus.Mislukt, "F-2024-007"),
+            new DateTime(2024, 4, 10), 775.00m, PaymentStatus.Mislukt, "F-2024-007",
+            "/api/facturen/PAY-2024-007"),
     };
 
     public static List<Claim> Claims => new()
