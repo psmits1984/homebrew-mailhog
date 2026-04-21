@@ -63,6 +63,8 @@ final appRouter = GoRouter(
       path: '/entiteiten/:entityId/sepa',
       builder: (_, state) => SepaMandateScreen(
         entityId: state.pathParameters['entityId']!,
+        polisNummer: state.uri.queryParameters['polis'],
+        polisOmschrijving: state.uri.queryParameters['omschrijving'],
       ),
     ),
     GoRoute(

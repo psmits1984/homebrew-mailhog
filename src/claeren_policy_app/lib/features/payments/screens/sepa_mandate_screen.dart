@@ -5,20 +5,30 @@ import '../../../core/constants/app_colors.dart';
 
 class SepaMandateScreen extends StatefulWidget {
   final String entityId;
-  const SepaMandateScreen({super.key, required this.entityId});
+  final String? polisNummer;
+  final String? polisOmschrijving;
+
+  const SepaMandateScreen({
+    super.key,
+    required this.entityId,
+    this.polisNummer,
+    this.polisOmschrijving,
+  });
 
   @override
   State<SepaMandateScreen> createState() => _SepaMandateScreenState();
 }
 
 class _SepaMandateScreenState extends State<SepaMandateScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _ibanCtrl = TextEditingController();
   final _naamCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   String _mandaatType = 'Doorlopend';
   bool _hasSig = false;
   bool _loading = false;
+  String? _ibanError;
+  String? _naamError;
+  String? _emailError;
 
   String get _mandaatRef =>
       'MAND-${widget.entityId}-${DateTime.now().year}';
@@ -29,6 +39,19 @@ class _SepaMandateScreenState extends State<SepaMandateScreen> {
       _emailCtrl.text.contains('@') &&
       _hasSig;
 
+  bool _validate() {
+    setState(() {
+      _ibanError = _ibanCtrl.text.replaceAll(' ', '').length < 15
+          ? 'Voer een geldig IBAN in'
+          : null;
+      _naamError = _naamCtrl.text.trim().isEmpty ? 'Voer de naam in' : null;
+      _emailError = !_emailCtrl.text.contains('@')
+          ? 'Voer een geldig e-mailadres in'
+          : null;
+    });
+    return _ibanError == null && _naamError == null && _emailError == null;
+  }
+
   @override
   void dispose() {
     _ibanCtrl.dispose();
@@ -38,7 +61,13 @@ class _SepaMandateScreenState extends State<SepaMandateScreen> {
   }
 
   Future<void> _submit() async {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (!_validate()) return;
+    if (!_hasSig) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Voeg uw handtekening toe')),
+      );
+      return;
+    }
     setState(() => _loading = true);
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
@@ -60,6 +89,8 @@ class _SepaMandateScreenState extends State<SepaMandateScreen> {
             _InfoRow(label: 'Referentie', value: _mandaatRef),
             _InfoRow(label: 'Type', value: _mandaatType),
             _InfoRow(label: 'IBAN', value: _ibanCtrl.text),
+            if (widget.polisNummer != null)
+              _InfoRow(label: 'Polis', value: widget.polisNummer!),
           ],
         ),
         actions: [
@@ -86,69 +117,92 @@ class _SepaMandateScreenState extends State<SepaMandateScreen> {
           onPressed: () => context.pop(),
         ),
       ),
-      body: Form(
-        key: _formKey,
-        onChanged: () => setState(() {}),
-        child: ListView(
-          padding: const EdgeInsets.all(16),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (widget.polisNummer != null) ...[
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.shield_outlined,
+                        color: AppColors.primary, size: 20),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Machtiging voor polis',
+                              style: TextStyle(
+                                  fontSize: 11, color: AppColors.textSecondary)),
+                          Text(
+                            widget.polisOmschrijving ?? widget.polisNummer!,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 14),
+                          ),
+                          Text(widget.polisNummer!,
+                              style: const TextStyle(
+                                  fontSize: 12, color: AppColors.textSecondary)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+
             _SectionHeader(title: 'Bankgegevens', icon: Icons.account_balance_outlined),
             const SizedBox(height: 12),
-            TextFormField(
+            _StyledField(
               controller: _ibanCtrl,
-              decoration: const InputDecoration(
-                labelText: 'IBAN',
-                hintText: 'NL00 AAAA 0000 0000 00',
-                prefixIcon: Icon(Icons.credit_card_outlined),
-              ),
-              inputFormatters: [_IbanFormatter()],
+              label: 'IBAN',
+              hint: 'NL00 AAAA 0000 0000 00',
+              icon: Icons.credit_card_outlined,
+              error: _ibanError,
+              formatters: [_IbanFormatter()],
               keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.characters,
-              validator: (v) => (v?.replaceAll(' ', '').length ?? 0) < 15
-                  ? 'Voer een geldig IBAN in'
-                  : null,
+              capitalization: TextCapitalization.characters,
+              onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 12),
-            TextFormField(
+            _StyledField(
               controller: _naamCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Naam rekeninghouder',
-                prefixIcon: Icon(Icons.person_outlined),
-              ),
-              validator: (v) =>
-                  (v?.trim().isEmpty ?? true) ? 'Voer de naam in' : null,
+              label: 'Naam rekeninghouder',
+              icon: Icons.person_outlined,
+              error: _naamError,
+              onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 24),
+
             _SectionHeader(title: 'Contactgegevens', icon: Icons.mail_outlined),
             const SizedBox(height: 12),
-            TextFormField(
+            _StyledField(
               controller: _emailCtrl,
-              decoration: const InputDecoration(
-                labelText: 'E-mailadres voor bevestiging',
-                prefixIcon: Icon(Icons.email_outlined),
-              ),
+              label: 'E-mailadres voor bevestiging',
+              icon: Icons.email_outlined,
+              error: _emailError,
               keyboardType: TextInputType.emailAddress,
-              validator: (v) => (v?.contains('@') ?? false)
-                  ? null
-                  : 'Voer een geldig e-mailadres in',
+              onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 24),
+
             _SectionHeader(title: 'Mandaattype', icon: Icons.repeat_outlined),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: _mandaatType,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.sync_outlined),
-              ),
-              items: const [
-                DropdownMenuItem(
-                    value: 'Doorlopend',
-                    child: Text('Doorlopend (terugkerend)')),
-                DropdownMenuItem(value: 'Eenmalig', child: Text('Eenmalig')),
-              ],
-              onChanged: (v) => setState(() => _mandaatType = v!),
+            _ToggleRow(
+              options: const ['Doorlopend', 'Eenmalig'],
+              selected: _mandaatType,
+              onChanged: (v) => setState(() => _mandaatType = v),
             ),
             const SizedBox(height: 24),
+
             _SectionHeader(title: 'Machtiging details', icon: Icons.info_outlined),
             const SizedBox(height: 12),
             Container(
@@ -163,15 +217,14 @@ class _SepaMandateScreenState extends State<SepaMandateScreen> {
                   _InfoRow(
                       label: 'Schuldeiser',
                       value: 'Claeren Verzekeringsmaatschappij N.V.'),
-                  _InfoRow(
-                      label: 'Schuldeiser ID',
-                      value: 'NL13ZZZ123456780000'),
+                  _InfoRow(label: 'Schuldeiser ID', value: 'NL13ZZZ123456780000'),
                   _InfoRow(label: 'Mandaatreferentie', value: _mandaatRef),
                   _InfoRow(label: 'Mandaattype', value: _mandaatType),
                 ],
               ),
             ),
             const SizedBox(height: 24),
+
             _SectionHeader(title: 'Uw handtekening', icon: Icons.draw_outlined),
             const SizedBox(height: 6),
             const Text(
@@ -179,22 +232,21 @@ class _SepaMandateScreenState extends State<SepaMandateScreen> {
               style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
             const SizedBox(height: 10),
-            _SignaturePad(
-                onChanged: (has) => setState(() => _hasSig = has)),
+            _SignaturePad(onChanged: (has) => setState(() => _hasSig = has)),
             const SizedBox(height: 20),
+
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: AppColors.warning.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(8),
-                border:
-                    Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
+                border: Border.all(
+                    color: AppColors.warning.withValues(alpha: 0.3)),
               ),
               child: const Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.info_outlined,
-                      color: AppColors.warning, size: 16),
+                  Icon(Icons.info_outlined, color: AppColors.warning, size: 16),
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -209,6 +261,7 @@ class _SepaMandateScreenState extends State<SepaMandateScreen> {
               ),
             ),
             const SizedBox(height: 28),
+
             ElevatedButton.icon(
               onPressed: _canSubmit && !_loading ? _submit : null,
               icon: _loading
@@ -249,6 +302,95 @@ class _SectionHeader extends StatelessWidget {
       );
 }
 
+class _StyledField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final String? hint;
+  final IconData icon;
+  final String? error;
+  final List<TextInputFormatter>? formatters;
+  final TextInputType? keyboardType;
+  final TextCapitalization capitalization;
+  final ValueChanged<String>? onChanged;
+
+  const _StyledField({
+    required this.controller,
+    required this.label,
+    this.hint,
+    required this.icon,
+    this.error,
+    this.formatters,
+    this.keyboardType,
+    this.capitalization = TextCapitalization.none,
+    this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) => TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: hint,
+          prefixIcon: Icon(icon),
+          errorText: error,
+        ),
+        inputFormatters: formatters,
+        keyboardType: keyboardType,
+        textCapitalization: capitalization,
+        onChanged: onChanged,
+      );
+}
+
+class _ToggleRow extends StatelessWidget {
+  final List<String> options;
+  final String selected;
+  final ValueChanged<String> onChanged;
+  const _ToggleRow(
+      {required this.options,
+      required this.selected,
+      required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) => Row(
+        children: options
+            .map((o) => Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => onChanged(o),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: selected == o
+                              ? AppColors.primary
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: selected == o
+                                ? AppColors.primary
+                                : AppColors.divider,
+                          ),
+                        ),
+                        child: Text(
+                          o,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: selected == o
+                                ? Colors.white
+                                : AppColors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ))
+            .toList(),
+      );
+}
+
 class _InfoRow extends StatelessWidget {
   final String label;
   final String value;
@@ -284,7 +426,6 @@ class _IbanFormatter extends TextInputFormatter {
         .toUpperCase()
         .replaceAll(RegExp(r'[^A-Z0-9]'), '');
     if (raw.length > 18) raw = raw.substring(0, 18);
-
     final buf = StringBuffer();
     for (int i = 0; i < raw.length; i++) {
       if (i > 0 && i % 4 == 0) buf.write(' ');
@@ -310,7 +451,6 @@ class _SignaturePad extends StatefulWidget {
 
 class _SignaturePadState extends State<_SignaturePad> {
   final List<Offset?> _points = [];
-
   bool get _hasSig => _points.isNotEmpty;
 
   void _clear() {
@@ -362,8 +502,8 @@ class _SignaturePadState extends State<_SignaturePad> {
               padding: EdgeInsets.only(top: 6),
               child: Text(
                 'Teken met uw vinger of muis',
-                style: TextStyle(
-                    color: AppColors.textSecondary, fontSize: 12),
+                style:
+                    TextStyle(color: AppColors.textSecondary, fontSize: 12),
                 textAlign: TextAlign.center,
               ),
             ),

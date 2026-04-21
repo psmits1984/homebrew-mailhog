@@ -114,13 +114,36 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
               ),
             ],
           ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () => context
-                .push('/polissen/${widget.entityId}/${widget.polisNummer}/claim'),
-            icon: const Icon(Icons.report_problem_outlined),
-            label: const Text('Schade melden'),
-            backgroundColor: AppColors.accent,
-            foregroundColor: Colors.white,
+          floatingActionButton: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              if (!detail.automatischIncasso)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: FloatingActionButton.extended(
+                    heroTag: 'incasso',
+                    onPressed: () => context.push(
+                      '/entiteiten/${widget.entityId}/sepa'
+                      '?polis=${widget.polisNummer}'
+                      '&omschrijving=${Uri.encodeComponent(detail.omschrijving)}',
+                    ),
+                    icon: const Icon(Icons.account_balance_outlined),
+                    label: const Text('Incasso instellen'),
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              FloatingActionButton.extended(
+                heroTag: 'schade',
+                onPressed: () => context
+                    .push('/polissen/${widget.entityId}/${widget.polisNummer}/claim'),
+                icon: const Icon(Icons.report_problem_outlined),
+                label: const Text('Schade melden'),
+                backgroundColor: AppColors.accent,
+                foregroundColor: Colors.white,
+              ),
+            ],
           ),
         );
       },
