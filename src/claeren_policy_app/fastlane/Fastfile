@@ -5,6 +5,19 @@ platform :ios do
   lane :beta do
     setup_ci if ENV['CI']
 
+    api_url = ENV.fetch('API_URL', 'https://bff.claeren.nl')
+
+    # Genereer Flutter/Generated.xcconfig en compileer Dart-code
+    sh("flutter build ios --release --no-codesign " \
+       "--dart-define=API_URL=#{api_url}",
+       chdir: "..")
+
+    # Installeer CocoaPods op basis van de gegenereerde Flutter-configuratie
+    cocoapods(
+      podfile: "ios/Podfile",
+      use_bundle_exec: false,
+    )
+
     match(
       type: "appstore",
       readonly: is_ci,
@@ -15,6 +28,8 @@ platform :ios do
       workspace: "ios/Runner.xcworkspace",
       scheme: "Runner",
       export_method: "app-store",
+      output_directory: "build",
+      output_name: "Runner.ipa",
     )
 
     upload_to_testflight(

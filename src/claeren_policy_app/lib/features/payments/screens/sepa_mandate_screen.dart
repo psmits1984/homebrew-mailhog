@@ -327,57 +327,40 @@ class _StyledField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          height: 56,
-          decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: error != null ? AppColors.error : AppColors.divider,
-              width: 1.5,
-            ),
-          ),
-          child: Row(
-            children: [
-              const SizedBox(width: 12),
-              Icon(icon, size: 20, color: AppColors.textSecondary),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  keyboardType: keyboardType,
-                  textCapitalization: capitalization,
-                  inputFormatters: formatters,
-                  onChanged: onChanged,
-                  style: const TextStyle(
-                      color: AppColors.textPrimary, fontSize: 15),
-                  decoration: InputDecoration(
-                    hintText: hint ?? label,
-                    hintStyle: const TextStyle(
-                        color: AppColors.textSecondary, fontSize: 15),
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    filled: false,
-                    isDense: true,
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-            ],
-          ),
+    final borderRadius = BorderRadius.circular(10);
+    final defaultBorder = OutlineInputBorder(
+      borderRadius: borderRadius,
+      borderSide: BorderSide(
+          color: error != null ? AppColors.error : AppColors.divider,
+          width: 1.5),
+    );
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      textCapitalization: capitalization,
+      inputFormatters: formatters,
+      onChanged: onChanged,
+      style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        errorText: error,
+        prefixIcon: Icon(icon, size: 20, color: AppColors.textSecondary),
+        filled: true,
+        fillColor: AppColors.background,
+        border: defaultBorder,
+        enabledBorder: defaultBorder,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: borderRadius,
+          borderSide:
+              const BorderSide(color: AppColors.primary, width: 1.5),
         ),
-        if (error != null) ...[
-          const SizedBox(height: 4),
-          Text(error!,
-              style: const TextStyle(
-                  color: AppColors.error, fontSize: 12)),
-        ],
-      ],
+        errorBorder: OutlineInputBorder(
+          borderRadius: borderRadius,
+          borderSide:
+              const BorderSide(color: AppColors.error, width: 1.5),
+        ),
+      ),
     );
   }
 }
