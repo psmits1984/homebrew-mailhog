@@ -11,6 +11,11 @@ import '../../features/claims/screens/new_claim_screen.dart';
 import '../../features/naverrrekening/screens/naverrrekening_screen.dart';
 import '../../features/payments/screens/payments_screen.dart';
 import '../../features/payments/screens/sepa_mandate_screen.dart';
+import '../../features/offertes/screens/offerte_list_screen.dart';
+import '../../features/offertes/screens/offerte_detail_screen.dart';
+import '../../features/compliance/screens/compliance_check_screen.dart';
+import '../../features/compliance/screens/ubo_formulier_screen.dart';
+import '../../features/slotverklaring/screens/slotverklaring_screen.dart';
 import '../storage/secure_storage.dart';
 
 final appRouter = GoRouter(
@@ -96,6 +101,56 @@ final appRouter = GoRouter(
       builder: (_, state) => NaverrekenScreen(
         entityId: state.pathParameters['entityId']!,
       ),
+    ),
+
+    // ─── Offertes ─────────────────────────────────────────────────────────────
+    GoRoute(
+      path: '/entiteiten/:entityId/offertes',
+      builder: (_, state) => OfferteListScreen(
+        entityId: state.pathParameters['entityId']!,
+      ),
+    ),
+    GoRoute(
+      path: '/offertes/:offerteId',
+      builder: (_, state) => OfferteDetailScreen(
+        offerteId: state.pathParameters['offerteId']!,
+      ),
+    ),
+
+    // ─── Compliance / VNAB ────────────────────────────────────────────────────
+    GoRoute(
+      path: '/offertes/:offerteId/compliance',
+      builder: (_, state) {
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+        return ComplianceCheckScreen(
+          offerteId: state.pathParameters['offerteId']!,
+          entityId: extra['entityId'] as String? ?? '',
+          relatieSoort: extra['relatieSoort'] as String? ?? 'Zakelijk',
+          kvkNummer: extra['kvkNummer'] as String?,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/offertes/:offerteId/ubo',
+      builder: (_, state) {
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+        return UboFormulierScreen(
+          offerteId: state.pathParameters['offerteId']!,
+          entityId: extra['entityId'] as String? ?? '',
+        );
+      },
+    ),
+
+    // ─── Slotverklaring ───────────────────────────────────────────────────────
+    GoRoute(
+      path: '/offertes/:offerteId/slotverklaring',
+      builder: (_, state) {
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+        return SlotverklaringScreen(
+          offerteId: state.pathParameters['offerteId']!,
+          entityId: extra['entityId'] as String? ?? '',
+        );
+      },
     ),
   ],
   errorBuilder: (_, state) => Scaffold(

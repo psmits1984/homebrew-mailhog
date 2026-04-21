@@ -19,4 +19,23 @@ class ApiConstants {
   static String navAntwoorden(String entityId, String uitvraagId) =>
       '/api/entiteiten/$entityId/naverrrekening/$uitvraagId/antwoorden';
   static const String machtigingen = '/api/machtigingen';
+
+  // Offertes
+  static String offertes(String entityId) =>
+      '/api/entiteiten/$entityId/offertes';
+  static String offerteDetail(String id) => '/api/offertes/$id';
+  static String offerteAccorderen(String id) => '/api/offertes/$id/accorderen';
+  static String offerteWeigeren(String id) => '/api/offertes/$id/weigeren';
+
+  // Compliance / VNAB
+  static const String complianceCheck = '/api/compliance/check';
+  static const String complianceUbo = '/api/compliance/ubo';
+  static String complianceStatus(String entityId) =>
+      '/api/compliance/$entityId/status';
+
+  // Slotverklaring
+  static String slotverklaringOtp(String offerteId) =>
+      '/api/slotverklaringen/$offerteId/otp';
+  static String slotverklaringOndertekenen(String offerteId) =>
+      '/api/slotverklaringen/$offerteId/ondertekenen';
 }
