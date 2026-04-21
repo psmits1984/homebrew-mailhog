@@ -13,6 +13,12 @@ class AppTheme {
           secondary: AppColors.accent,
           surface: AppColors.surface,
           error: AppColors.error,
+        ).copyWith(
+          surfaceContainerHighest: AppColors.surface,
+          surfaceContainerHigh: AppColors.surface,
+          surfaceContainer: AppColors.surface,
+          surfaceContainerLow: AppColors.surface,
+          surfaceContainerLowest: AppColors.surface,
         ),
         scaffoldBackgroundColor: AppColors.background,
         appBarTheme: const AppBarTheme(
