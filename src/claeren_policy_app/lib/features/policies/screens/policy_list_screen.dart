@@ -36,6 +36,12 @@ class PolicyListScreen extends ConsumerWidget {
                 context.push('/entiteiten/$entityId/profiel'),
           ),
           IconButton(
+            icon: const Icon(Icons.description_outlined, color: Colors.white),
+            tooltip: 'Offertes',
+            onPressed: () =>
+                context.push('/entiteiten/$entityId/offertes'),
+          ),
+          IconButton(
             icon: const Icon(Icons.receipt_long_outlined, color: Colors.white),
             tooltip: 'Betaalbewijzen',
             onPressed: () =>
