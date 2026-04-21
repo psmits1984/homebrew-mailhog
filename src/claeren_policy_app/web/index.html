@@ -69,10 +69,12 @@
       box-shadow: none !important;
     }
 
-    /* Also cover flt-text-editing-host for focused state */
+    /* flt-text-editing-host: keep interactive (opacity must stay 1 for iOS
+       keyboard to appear), only hide the text visually since Flutter draws it */
     flt-text-editing-host input,
     flt-text-editing-host textarea {
-      opacity: 0.001 !important;
+      color: transparent !important;
+      caret-color: transparent !important;
     }
 
     /* ─── Auth Overlay ─────────────────────────────────────────────────────── */

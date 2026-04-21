@@ -34,18 +34,35 @@ class _SepaMandateScreenState extends State<SepaMandateScreen> {
       'MAND-${widget.entityId}-${DateTime.now().year}';
 
   bool get _canSubmit =>
-      _ibanCtrl.text.replaceAll(' ', '').length >= 15 &&
+      _isValidIban(_ibanCtrl.text) &&
       _naamCtrl.text.trim().isNotEmpty &&
-      _emailCtrl.text.contains('@') &&
+      _isValidEmail(_emailCtrl.text) &&
       _hasSig;
+
+  static bool _isValidIban(String raw) {
+    final iban = raw.replaceAll(' ', '').toUpperCase();
+    if (iban.length < 15 || iban.length > 34) return false;
+    if (!RegExp(r'^[A-Z]{2}[0-9]{2}[A-Z0-9]+$').hasMatch(iban)) return false;
+    final rearranged = iban.substring(4) + iban.substring(0, 4);
+    final numeric = rearranged.split('').map((c) {
+      final code = c.codeUnitAt(0);
+      return code >= 65 ? (code - 55).toString() : c;
+    }).join();
+    var remainder = 0;
+    for (final ch in numeric.split('')) {
+      remainder = (remainder * 10 + int.parse(ch)) % 97;
+    }
+    return remainder == 1;
+  }
+
+  static bool _isValidEmail(String email) =>
+      RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]{2,}$').hasMatch(email.trim());
 
   bool _validate() {
     setState(() {
-      _ibanError = _ibanCtrl.text.replaceAll(' ', '').length < 15
-          ? 'Voer een geldig IBAN in'
-          : null;
+      _ibanError = !_isValidIban(_ibanCtrl.text) ? 'Voer een geldig IBAN in' : null;
       _naamError = _naamCtrl.text.trim().isEmpty ? 'Voer de naam in' : null;
-      _emailError = !_emailCtrl.text.contains('@')
+      _emailError = !_isValidEmail(_emailCtrl.text)
           ? 'Voer een geldig e-mailadres in'
           : null;
     });
