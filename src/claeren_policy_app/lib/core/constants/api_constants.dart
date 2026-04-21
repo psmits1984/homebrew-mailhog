@@ -18,4 +18,5 @@ class ApiConstants {
   static String naverrrekening(String entityId) => '/api/entiteiten/$entityId/naverrrekening';
   static String navAntwoorden(String entityId, String uitvraagId) =>
       '/api/entiteiten/$entityId/naverrrekening/$uitvraagId/antwoorden';
+  static const String machtigingen = '/api/machtigingen';
 }
