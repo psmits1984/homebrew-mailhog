@@ -153,49 +153,46 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
-          onTap: () => focusNode.requestFocus(),
-          child: Container(
-            height: 56,
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: errorText != null ? AppColors.error : const Color(0xFFD1D5DB),
-                width: 1.5,
-              ),
+        Container(
+          height: 56,
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: errorText != null ? AppColors.error : const Color(0xFFD1D5DB),
+              width: 1.5,
             ),
-            child: Row(
-              children: [
-                if (prefixIcon != null) ...[
-                  const SizedBox(width: 12),
-                  Icon(prefixIcon, color: AppColors.textSecondary, size: 20),
-                ],
+          ),
+          child: Row(
+            children: [
+              if (prefixIcon != null) ...[
                 const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: controller,
-                    focusNode: focusNode,
-                    keyboardType: keyboardType,
-                    textInputAction: textInputAction,
-                    onSubmitted: onSubmitted,
-                    obscureText: obscureText,
-                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 16),
-                    decoration: InputDecoration(
-                      hintText: hint,
-                      hintStyle: const TextStyle(color: AppColors.textSecondary),
-                      filled: false,
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      isDense: true,
-                      contentPadding: EdgeInsets.zero,
-                    ),
+                Icon(prefixIcon, color: AppColors.textSecondary, size: 20),
+              ],
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  focusNode: focusNode,
+                  keyboardType: keyboardType,
+                  textInputAction: textInputAction,
+                  onSubmitted: onSubmitted,
+                  obscureText: obscureText,
+                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 16),
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: const TextStyle(color: AppColors.textSecondary),
+                    filled: false,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
                   ),
                 ),
-                if (suffix != null) suffix,
-              ],
-            ),
+              ),
+              if (suffix != null) suffix,
+            ],
           ),
         ),
         if (errorText != null) ...[
@@ -207,15 +204,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildLoginButton() {
-    return GestureDetector(
-      onTap: _loading ? null : _login,
-      child: Container(
-        height: 52,
-        decoration: BoxDecoration(
-          color: _loading ? AppColors.primary.withValues(alpha: 0.6) : AppColors.primary,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        alignment: Alignment.center,
+    return SizedBox(
+      height: 52,
+      child: ElevatedButton(
+        onPressed: _loading ? null : _login,
         child: _loading
             ? const SizedBox(
                 height: 22,
@@ -224,7 +216,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               )
             : const Text(
                 'Inloggen',
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
       ),
     );
