@@ -331,8 +331,9 @@ class _StyledField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
+          height: 56,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.background,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: error != null ? AppColors.error : AppColors.divider,
@@ -343,7 +344,7 @@ class _StyledField extends StatelessWidget {
             children: [
               const SizedBox(width: 12),
               Icon(icon, size: 20, color: AppColors.textSecondary),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               Expanded(
                 child: TextField(
                   controller: controller,
@@ -362,8 +363,7 @@ class _StyledField extends StatelessWidget {
                     focusedBorder: InputBorder.none,
                     filled: false,
                     isDense: true,
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 14),
+                    contentPadding: EdgeInsets.zero,
                   ),
                 ),
               ),
