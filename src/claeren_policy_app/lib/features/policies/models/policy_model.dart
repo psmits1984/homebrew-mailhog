@@ -8,6 +8,7 @@ class PolicyModel {
   final DateTime vervaldatum;
   final String productCode;
   final String entityId;
+  final bool automatischIncasso;
 
   const PolicyModel({
     required this.polisNummer,
@@ -19,6 +20,7 @@ class PolicyModel {
     required this.vervaldatum,
     required this.productCode,
     required this.entityId,
+    this.automatischIncasso = false,
   });
 
   factory PolicyModel.fromJson(Map<String, dynamic> json) => PolicyModel(
@@ -31,6 +33,7 @@ class PolicyModel {
         vervaldatum: DateTime.parse(json['vervaldatum'] as String),
         productCode: json['productCode'] as String,
         entityId: json['entityId'] as String,
+        automatischIncasso: json['automatischIncasso'] as bool? ?? false,
       );
 }
 
@@ -71,6 +74,7 @@ class PolicyDetailModel extends PolicyModel {
     required super.vervaldatum,
     required super.productCode,
     required super.entityId,
+    super.automatischIncasso,
     required this.eigenRisico,
     required this.dekkingen,
     required this.documenten,
@@ -89,6 +93,7 @@ class PolicyDetailModel extends PolicyModel {
       vervaldatum: base.vervaldatum,
       productCode: base.productCode,
       entityId: base.entityId,
+      automatischIncasso: base.automatischIncasso,
       eigenRisico: (json['eigenRisico'] as num).toDouble(),
       dekkingen: (json['dekkingen'] as List)
           .map((d) => Dekking.fromJson(d as Map<String, dynamic>))

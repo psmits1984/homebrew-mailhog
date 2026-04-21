@@ -225,9 +225,35 @@ class _PaymentCard extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodySmall),
                 ],
               ),
-              if (payment.factuurDownloadUrl.isNotEmpty) ...[
+              if (payment.status == PaymentStatus.openstaand ||
+                  payment.status == PaymentStatus.mislukt) ...[
                 const SizedBox(height: 8),
                 const Divider(height: 1),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton.icon(
+                      icon: const Icon(Icons.payment_outlined, size: 16),
+                      label: const Text('Betaal nu'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.success,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        textStyle: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w600),
+                      ),
+                      onPressed: () =>
+                          _showBetaalOpties(context, payment, currency),
+                    ),
+                  ],
+                ),
+              ],
+              if (payment.factuurDownloadUrl.isNotEmpty) ...[
+                if (payment.status == PaymentStatus.betaald)
+                  const SizedBox(height: 8),
+                if (payment.status == PaymentStatus.betaald)
+                  const Divider(height: 1),
                 const SizedBox(height: 4),
                 Align(
                   alignment: Alignment.centerRight,
@@ -244,6 +270,269 @@ class _PaymentCard extends StatelessWidget {
                   ),
                 ),
               ],
+            ],
+          ),
+        ),
+      );
+}
+
+void _showBetaalOpties(
+    BuildContext context, PaymentModel payment, NumberFormat currency) {
+  showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => _BetaalOptiesSheet(payment: payment, currency: currency),
+  );
+}
+
+// ─── Betaalopties bottom sheet ─────────────────────────────────────────────────
+
+class _BetaalOptiesSheet extends StatefulWidget {
+  final PaymentModel payment;
+  final NumberFormat currency;
+  const _BetaalOptiesSheet({required this.payment, required this.currency});
+
+  @override
+  State<_BetaalOptiesSheet> createState() => _BetaalOptiesSheetState();
+}
+
+class _BetaalOptiesSheetState extends State<_BetaalOptiesSheet> {
+  String? _selectedBank;
+  bool _loading = false;
+  bool _done = false;
+  String? _method;
+
+  static const _banks = [
+    ('ABN AMRO', 'ABNANL2A'),
+    ('ING', 'INGBNL2A'),
+    ('Rabobank', 'RABONL2U'),
+    ('SNS Bank', 'SNSBNL2A'),
+    ('ASN Bank', 'ASNBNL21'),
+    ('Bunq', 'BUNQNL2A'),
+    ('Knab', 'KNABNL2H'),
+    ('Triodos', 'TRIONL2U'),
+  ];
+
+  Future<void> _betaal(String method) async {
+    setState(() {
+      _method = method;
+      _loading = true;
+    });
+    await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+    setState(() {
+      _loading = false;
+      _done = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+      child: _done ? _buildSuccess() : _buildOptions(),
+    );
+  }
+
+  Widget _buildSuccess() => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 12),
+          const Icon(Icons.check_circle, color: AppColors.success, size: 56),
+          const SizedBox(height: 12),
+          const Text('Betaling geslaagd',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 6),
+          Text(
+            'Uw betaling van ${widget.currency.format(widget.payment.bedrag)} '
+            'is verwerkt via ${_method ?? ""}.',
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: AppColors.textSecondary),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Sluiten'),
+            ),
+          ),
+        ],
+      );
+
+  Widget _buildOptions() => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.divider,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Betaal ${widget.currency.format(widget.payment.bedrag)}',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Text(widget.payment.omschrijvingPolis,
+              style: const TextStyle(
+                  color: AppColors.textSecondary, fontSize: 13)),
+          const SizedBox(height: 20),
+
+          if (_loading)
+            const Center(child: CircularProgressIndicator())
+          else ...[
+            // Wero
+            _PayMethodTile(
+              logo: Icons.contactless_outlined,
+              name: 'Wero',
+              subtitle: 'Betaal direct via uw bank-app',
+              color: const Color(0xFF00A859),
+              onTap: () => _betaal('Wero'),
+            ),
+            const SizedBox(height: 12),
+
+            // iDEAL
+            const Text('iDEAL — kies uw bank',
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                    color: AppColors.textSecondary)),
+            const SizedBox(height: 8),
+            ...(_banks.map((b) => _BankTile(
+                  naam: b.$1,
+                  bic: b.$2,
+                  selected: _selectedBank == b.$1,
+                  onTap: () => setState(() => _selectedBank = b.$1),
+                ))),
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              onPressed: _selectedBank != null
+                  ? () => _betaal('iDEAL ($_selectedBank)')
+                  : null,
+              icon: const Icon(Icons.arrow_forward),
+              label: Text(_selectedBank != null
+                  ? 'Betaal via iDEAL · $_selectedBank'
+                  : 'Selecteer een bank'),
+            ),
+          ],
+        ],
+      );
+}
+
+class _PayMethodTile extends StatelessWidget {
+  final IconData logo;
+  final String name;
+  final String subtitle;
+  final Color color;
+  final VoidCallback onTap;
+  const _PayMethodTile(
+      {required this.logo,
+      required this.name,
+      required this.subtitle,
+      required this.color,
+      required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color.withValues(alpha: 0.4)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(logo, color: color, size: 22),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15)),
+                  Text(subtitle,
+                      style: const TextStyle(
+                          color: AppColors.textSecondary, fontSize: 12)),
+                ],
+              ),
+              const Spacer(),
+              Icon(Icons.arrow_forward_ios, size: 14, color: color),
+            ],
+          ),
+        ),
+      );
+}
+
+class _BankTile extends StatelessWidget {
+  final String naam;
+  final String bic;
+  final bool selected;
+  final VoidCallback onTap;
+  const _BankTile(
+      {required this.naam,
+      required this.bic,
+      required this.selected,
+      required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: selected
+                ? AppColors.primary.withValues(alpha: 0.08)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: selected ? AppColors.primary : AppColors.divider,
+              width: selected ? 1.5 : 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.account_balance,
+                  size: 18,
+                  color:
+                      selected ? AppColors.primary : AppColors.textSecondary),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(naam,
+                    style: TextStyle(
+                      fontWeight:
+                          selected ? FontWeight.w600 : FontWeight.normal,
+                      color: selected
+                          ? AppColors.primary
+                          : AppColors.textPrimary,
+                    )),
+              ),
+              if (selected)
+                const Icon(Icons.check_circle,
+                    size: 16, color: AppColors.primary),
             ],
           ),
         ),

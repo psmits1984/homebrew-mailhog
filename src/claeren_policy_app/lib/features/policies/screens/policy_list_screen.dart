@@ -209,6 +209,58 @@ class _PolicyCard extends StatelessWidget {
                       size: 18, color: AppColors.textSecondary),
                 ],
               ),
+              if (policy.status == PolicyStatus.actief) ...[
+                const SizedBox(height: 8),
+                const Divider(height: 1),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.account_balance_outlined,
+                      size: 13,
+                      color: policy.automatischIncasso
+                          ? AppColors.success
+                          : AppColors.textSecondary,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      policy.automatischIncasso
+                          ? 'Automatisch incasso actief'
+                          : 'Geen automatisch incasso',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: policy.automatischIncasso
+                            ? AppColors.success
+                            : AppColors.textSecondary,
+                      ),
+                    ),
+                    if (!policy.automatischIncasso) ...[
+                      const Spacer(),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => context.push(
+                          '/entiteiten/${policy.entityId}/sepa'
+                          '?polis=${policy.polisNummer}'
+                          '&omschrijving=${Uri.encodeComponent(policy.omschrijving)}',
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Instellen',
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.accent,
+                                    fontWeight: FontWeight.w600)),
+                            SizedBox(width: 2),
+                            Icon(Icons.arrow_forward_ios,
+                                size: 10, color: AppColors.accent),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
             ],
           ),
         ),

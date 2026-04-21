@@ -9,7 +9,8 @@ public record Policy(
     DateOnly Ingangsdatum,
     DateOnly Vervaldatum,
     string ProductCode,
-    string EntityId
+    string EntityId,
+    bool AutomatischIncasso = false
 );
 
 public enum PolicyStatus
