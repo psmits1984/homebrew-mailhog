@@ -368,23 +368,27 @@ class _InputField extends StatelessWidget {
               Icon(icon, size: 20, color: AppColors.textSecondary),
               const SizedBox(width: 10),
               Expanded(
-                child: TextField(
-                  controller: controller,
-                  keyboardType: keyboardType,
-                  textCapitalization: capitalization,
-                  inputFormatters: formatters,
-                  onChanged: onChanged,
-                  // expands:true vult de volledige Container-hoogte zodat
-                  // het hele veld tappable is op Flutter Web iOS
-                  expands: true,
-                  maxLines: null,
-                  minLines: null,
-                  style: const TextStyle(
-                      color: AppColors.textPrimary, fontSize: 15),
-                  decoration: InputDecoration.collapsed(
-                    hintText: hint,
-                    hintStyle: const TextStyle(
-                        color: AppColors.textSecondary, fontSize: 15),
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    inputDecorationTheme:
+                        const InputDecorationTheme(filled: false),
+                  ),
+                  child: TextField(
+                    controller: controller,
+                    keyboardType: keyboardType,
+                    textCapitalization: capitalization,
+                    inputFormatters: formatters,
+                    onChanged: onChanged,
+                    expands: true,
+                    maxLines: null,
+                    minLines: null,
+                    style: const TextStyle(
+                        color: AppColors.textPrimary, fontSize: 15),
+                    decoration: InputDecoration.collapsed(
+                      hintText: hint,
+                      hintStyle: const TextStyle(
+                          color: AppColors.textSecondary, fontSize: 15),
+                    ),
                   ),
                 ),
               ),
@@ -661,6 +665,7 @@ class _SignaturePadState extends State<_SignaturePad> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onPanStart: (d) {
                   setState(() => _points.add(d.localPosition));
                   widget.onChanged(true);
