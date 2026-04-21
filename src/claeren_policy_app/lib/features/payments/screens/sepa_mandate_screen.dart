@@ -117,11 +117,9 @@ class _SepaMandateScreenState extends State<SepaMandateScreen> {
           onPressed: () => context.pop(),
         ),
       ),
-      body: SingleChildScrollView(
+      body: ListView(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+        children: [
             if (widget.polisNummer != null) ...[
               Container(
                 padding: const EdgeInsets.all(14),
@@ -276,7 +274,6 @@ class _SepaMandateScreenState extends State<SepaMandateScreen> {
             const SizedBox(height: 32),
           ],
         ),
-      ),
     );
   }
 }
