@@ -26,29 +26,6 @@ class _OfferteDetailScreenState extends ConsumerState<OfferteDetailScreen> {
   bool _loading = false;
 
   Future<void> _accorderen(OfferteModel offerte) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Offerte accorderen'),
-        content: Text(
-          'Weet u zeker dat u akkoord wilt gaan met offerte '
-          '${offerte.referentie}?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Annuleren'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Akkoord'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm != true || !mounted) return;
-
     setState(() => _loading = true);
     try {
       final updated = await ref
@@ -67,8 +44,19 @@ class _OfferteDetailScreenState extends ConsumerState<OfferteDetailScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Fout: $e')),
+        await showDialog<void>(
+          context: context,
+          useRootNavigator: true,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Fout'),
+            content: Text('$e'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Sluiten'),
+              ),
+            ],
+          ),
         );
       }
     } finally {
@@ -77,45 +65,73 @@ class _OfferteDetailScreenState extends ConsumerState<OfferteDetailScreen> {
   }
 
   Future<void> _weigeren(OfferteModel offerte) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Offerte weigeren'),
-        content: Text(
-          'Weet u zeker dat u offerte ${offerte.referentie} wilt weigeren?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Annuleren'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
+    final bottomCtx = context;
+    final confirmed = await showModalBottomSheet<bool>(
+      context: bottomCtx,
+      useRootNavigator: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Offerte weigeren',
+              style: Theme.of(ctx).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Weet u zeker dat u offerte ${offerte.referentie} wilt weigeren?',
+              style: const TextStyle(color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.error,
-                foregroundColor: Colors.white),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Weigeren'),
-          ),
-        ],
+                foregroundColor: Colors.white,
+                minimumSize: const Size.fromHeight(48),
+              ),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Bevestig weigeren'),
+            ),
+            const SizedBox(height: 10),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size.fromHeight(48),
+              ),
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Annuleren'),
+            ),
+          ],
+        ),
       ),
     );
 
-    if (confirm != true || !mounted) return;
+    if (confirmed != true || !mounted) return;
 
     setState(() => _loading = true);
     try {
       await ref.read(offerteRepositoryProvider).weigeren(widget.offerteId);
       ref.invalidate(offerteDetailProvider(widget.offerteId));
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Offerte geweigerd.')),
-        );
-        context.pop();
-      }
+      if (mounted) context.pop();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Fout: $e')),
+        await showDialog<void>(
+          context: context,
+          useRootNavigator: true,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Fout'),
+            content: Text('$e'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Sluiten'),
+              ),
+            ],
+          ),
         );
       }
     } finally {
