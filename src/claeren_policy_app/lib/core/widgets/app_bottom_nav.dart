@@ -14,8 +14,7 @@ class AppBottomNav extends StatelessWidget {
     required this.currentTab,
   });
 
-  void _onTap(BuildContext context, int index) {
-    final tab = BottomNavTab.values[index];
+  void _onTap(BuildContext context, BottomNavTab tab) {
     if (tab == currentTab) return;
     switch (tab) {
       case BottomNavTab.polissen:
@@ -31,41 +30,91 @@ class AppBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      currentIndex: currentTab.index,
-      onTap: (index) => _onTap(context, index),
-      backgroundColor: Colors.white,
-      selectedItemColor: AppColors.primary,
-      unselectedItemColor: AppColors.textSecondary,
-      selectedLabelStyle: const TextStyle(
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: AppColors.divider, width: 1)),
       ),
-      unselectedLabelStyle: const TextStyle(fontSize: 11),
-      elevation: 8,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.shield_outlined),
-          activeIcon: Icon(Icons.shield),
-          label: 'Polissen',
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 58,
+          child: Row(
+            children: [
+              _NavItem(
+                icon: Icons.shield_outlined,
+                activeIcon: Icons.shield,
+                label: 'Polissen',
+                active: currentTab == BottomNavTab.polissen,
+                onTap: () => _onTap(context, BottomNavTab.polissen),
+              ),
+              _NavItem(
+                icon: Icons.description_outlined,
+                activeIcon: Icons.description,
+                label: 'Offertes',
+                active: currentTab == BottomNavTab.offertes,
+                onTap: () => _onTap(context, BottomNavTab.offertes),
+              ),
+              _NavItem(
+                icon: Icons.receipt_long_outlined,
+                activeIcon: Icons.receipt_long,
+                label: 'Betalingen',
+                active: currentTab == BottomNavTab.betalingen,
+                onTap: () => _onTap(context, BottomNavTab.betalingen),
+              ),
+              _NavItem(
+                icon: Icons.person_outlined,
+                activeIcon: Icons.person,
+                label: 'Profiel',
+                active: currentTab == BottomNavTab.profiel,
+                onTap: () => _onTap(context, BottomNavTab.profiel),
+              ),
+            ],
+          ),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.description_outlined),
-          activeIcon: Icon(Icons.description),
-          label: 'Offertes',
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+
+  const _NavItem({
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+    required this.active,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = active ? AppColors.primary : AppColors.textSecondary;
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(active ? activeIcon : icon, color: color, size: 22),
+            const SizedBox(height: 3),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 10,
+                fontWeight: active ? FontWeight.w700 : FontWeight.w400,
+              ),
+            ),
+          ],
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.receipt_long_outlined),
-          activeIcon: Icon(Icons.receipt_long),
-          label: 'Betalingen',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person_outlined),
-          activeIcon: Icon(Icons.person),
-          label: 'Profiel',
-        ),
-      ],
+      ),
     );
   }
 }
