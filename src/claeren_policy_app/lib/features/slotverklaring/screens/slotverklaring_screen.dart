@@ -350,34 +350,57 @@ class _SlotverklaringScreenState
         const SizedBox(height: 10),
 
         // OTP input
-        TextFormField(
-          controller: _otpCtrl,
-          keyboardType: TextInputType.number,
-          textAlign: TextAlign.center,
-          maxLength: 6,
-          onChanged: (_) => setState(() => _otpError = null),
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 8),
-          decoration: InputDecoration(
-            hintText: '------',
-            hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 24, letterSpacing: 8),
-            errorText: _otpError,
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: AppColors.divider),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 64,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: _otpError != null
+                      ? AppColors.error
+                      : AppColors.divider,
+                  width: 1.5,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: TextField(
+                controller: _otpCtrl,
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+                maxLength: 6,
+                onChanged: (_) => setState(() => _otpError = null),
+                style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 8,
+                    color: AppColors.textPrimary),
+                decoration: const InputDecoration(
+                  hintText: '------',
+                  hintStyle: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 24,
+                      letterSpacing: 8),
+                  filled: false,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  isDense: true,
+                  counterText: '',
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: AppColors.divider),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: AppColors.primary, width: 2),
-            ),
-            counterText: '',
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-          ),
+            if (_otpError != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4, left: 4),
+                child: Text(_otpError!,
+                    style: const TextStyle(
+                        color: AppColors.error, fontSize: 12)),
+              ),
+          ],
         ),
         const SizedBox(height: 24),
 

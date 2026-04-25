@@ -14,33 +14,54 @@
 
 ### ✅ Enige werkende TextField aanpak op iOS Flutter Web (CanvasKit)
 
-**Gebruik altijd `TextFormField` met expliciete `filled: true, fillColor: Colors.white, OutlineInputBorder`.**
-Container + TextField met `expands:true` en `filled:false` werkt NIET — velden worden grijs en het toetsenbord verschijnt niet.
+**Gebruik ALTIJD `Container(BoxDecoration)` + `TextField(filled:false, InputBorder.none)`.**
+`TextFormField` / `OutlineInputBorder` / `filled:true` WERKT NIET — velden renderen grijs en het toetsenbord verschijnt niet.
+`expands:true` en `InputDecoration.collapsed` ook NIET gebruiken.
 
 ```dart
-TextFormField(
-  controller: controller,
-  style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
-  decoration: InputDecoration(
-    hintText: 'Placeholder',
-    prefixIcon: Icon(icon, color: AppColors.textSecondary, size: 20),
-    filled: true,
-    fillColor: Colors.white,           // VERPLICHT: expliciet wit
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: AppColors.divider),
+Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Container(
+      height: 54,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: error != null ? AppColors.error : AppColors.divider,
+          width: 1.5,
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          Icon(icon, color: AppColors.textSecondary, size: 20),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 15),
+                filled: false,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ),
+        ],
+      ),
     ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: AppColors.divider),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: AppColors.primary, width: 2),
-    ),
-    errorText: errorVariable,
-    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-  ),
+    if (error != null)
+      Padding(
+        padding: const EdgeInsets.only(top: 4, left: 4),
+        child: Text(error!, style: const TextStyle(color: AppColors.error, fontSize: 12)),
+      ),
+  ],
 )
 ```
 
