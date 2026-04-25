@@ -14,46 +14,55 @@ class AppBottomNav extends StatelessWidget {
     required this.currentTab,
   });
 
+  void _onTap(BuildContext context, int index) {
+    final tab = BottomNavTab.values[index];
+    if (tab == currentTab) return;
+    switch (tab) {
+      case BottomNavTab.polissen:
+        context.go('/polissen/$entityId');
+      case BottomNavTab.offertes:
+        context.go('/entiteiten/$entityId/offertes');
+      case BottomNavTab.betalingen:
+        context.go('/entiteiten/$entityId/betalingen');
+      case BottomNavTab.profiel:
+        context.go('/entiteiten/$entityId/profiel');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return NavigationBar(
-      backgroundColor: AppColors.surface,
-      indicatorColor: AppColors.primary.withValues(alpha: 0.12),
-      selectedIndex: currentTab.index,
-      labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-      onDestinationSelected: (index) {
-        final tab = BottomNavTab.values[index];
-        if (tab == currentTab) return;
-        switch (tab) {
-          case BottomNavTab.polissen:
-            context.go('/polissen/$entityId');
-          case BottomNavTab.offertes:
-            context.go('/entiteiten/$entityId/offertes');
-          case BottomNavTab.betalingen:
-            context.go('/entiteiten/$entityId/betalingen');
-          case BottomNavTab.profiel:
-            context.go('/entiteiten/$entityId/profiel');
-        }
-      },
-      destinations: const [
-        NavigationDestination(
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      currentIndex: currentTab.index,
+      onTap: (index) => _onTap(context, index),
+      backgroundColor: Colors.white,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.textSecondary,
+      selectedLabelStyle: const TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+      ),
+      unselectedLabelStyle: const TextStyle(fontSize: 11),
+      elevation: 8,
+      items: const [
+        BottomNavigationBarItem(
           icon: Icon(Icons.shield_outlined),
-          selectedIcon: Icon(Icons.shield, color: AppColors.primary),
+          activeIcon: Icon(Icons.shield),
           label: 'Polissen',
         ),
-        NavigationDestination(
+        BottomNavigationBarItem(
           icon: Icon(Icons.description_outlined),
-          selectedIcon: Icon(Icons.description, color: AppColors.primary),
+          activeIcon: Icon(Icons.description),
           label: 'Offertes',
         ),
-        NavigationDestination(
+        BottomNavigationBarItem(
           icon: Icon(Icons.receipt_long_outlined),
-          selectedIcon: Icon(Icons.receipt_long, color: AppColors.primary),
+          activeIcon: Icon(Icons.receipt_long),
           label: 'Betalingen',
         ),
-        NavigationDestination(
+        BottomNavigationBarItem(
           icon: Icon(Icons.person_outlined),
-          selectedIcon: Icon(Icons.person, color: AppColors.primary),
+          activeIcon: Icon(Icons.person),
           label: 'Profiel',
         ),
       ],
