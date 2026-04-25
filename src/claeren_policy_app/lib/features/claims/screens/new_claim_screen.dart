@@ -132,6 +132,8 @@ class _NewClaimScreenState extends ConsumerState<NewClaimScreen> {
                       suffixText: _schadeDatum != null
                           ? dateFormat.format(_schadeDatum!)
                           : null,
+                      filled: false,
+                      fillColor: Colors.transparent,
                     ),
                     controller: TextEditingController(
                       text: _schadeDatum != null
@@ -151,6 +153,8 @@ class _NewClaimScreenState extends ConsumerState<NewClaimScreen> {
                   labelText: 'Omschrijving schade *',
                   hintText: 'Beschrijf wat er is gebeurd...',
                   alignLabelWithHint: true,
+                  filled: false,
+                  fillColor: Colors.transparent,
                 ),
                 validator: (v) => (v == null || v.trim().length < 10)
                     ? 'Geef een beschrijving van minimaal 10 tekens'
@@ -162,6 +166,8 @@ class _NewClaimScreenState extends ConsumerState<NewClaimScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Locatie (optioneel)',
                   prefixIcon: Icon(Icons.location_on_outlined),
+                  filled: false,
+                  fillColor: Colors.transparent,
                 ),
               ),
               const SizedBox(height: 16),
@@ -171,6 +177,8 @@ class _NewClaimScreenState extends ConsumerState<NewClaimScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Geschatte schade in € (optioneel)',
                   prefixIcon: Icon(Icons.euro_outlined),
+                  filled: false,
+                  fillColor: Colors.transparent,
                 ),
               ),
               const SizedBox(height: 32),

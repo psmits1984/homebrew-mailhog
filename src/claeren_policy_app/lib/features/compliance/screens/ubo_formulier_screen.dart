@@ -466,25 +466,24 @@ class _InputField extends StatelessWidget {
               Icon(icon, size: 20, color: AppColors.textSecondary),
               const SizedBox(width: 10),
               Expanded(
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    inputDecorationTheme:
-                        const InputDecorationTheme(filled: false),
-                  ),
-                  child: TextField(
-                    controller: controller,
-                    keyboardType: keyboardType,
-                    onChanged: onChanged,
-                    expands: true,
-                    maxLines: null,
-                    minLines: null,
-                    style: const TextStyle(
-                        color: AppColors.textPrimary, fontSize: 15),
-                    decoration: InputDecoration.collapsed(
-                      hintText: hint,
-                      hintStyle: const TextStyle(
-                          color: AppColors.textSecondary, fontSize: 15),
-                    ),
+                child: TextField(
+                  controller: controller,
+                  keyboardType: keyboardType,
+                  onChanged: onChanged,
+                  expands: true,
+                  maxLines: null,
+                  minLines: null,
+                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 15),
+                    filled: false,
+                    fillColor: Colors.transparent,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
                   ),
                 ),
               ),
@@ -545,23 +544,22 @@ class _MultilineInputField extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    inputDecorationTheme:
-                        const InputDecorationTheme(filled: false),
-                  ),
-                  child: TextField(
-                    controller: controller,
-                    maxLines: 4,
-                    minLines: 3,
-                    onChanged: onChanged,
-                    style: const TextStyle(
-                        color: AppColors.textPrimary, fontSize: 14),
-                    decoration: InputDecoration.collapsed(
-                      hintText: hint,
-                      hintStyle: const TextStyle(
-                          color: AppColors.textSecondary, fontSize: 14),
-                    ),
+                child: TextField(
+                  controller: controller,
+                  maxLines: 4,
+                  minLines: 3,
+                  onChanged: onChanged,
+                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                    filled: false,
+                    fillColor: Colors.transparent,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
                   ),
                 ),
               ),

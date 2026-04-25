@@ -205,7 +205,11 @@ class _NaverrekenFormScreenState extends ConsumerState<NaverrekenFormScreen> {
   Widget _buildVraagField(NaverrekenVraag v) {
     if (v.type == 'select' && v.opties != null) {
       return DropdownButtonFormField<String>(
-        decoration: InputDecoration(labelText: v.vraag),
+        decoration: InputDecoration(
+          labelText: v.vraag,
+          filled: false,
+          fillColor: Colors.transparent,
+        ),
         items: v.opties!
             .map((o) => DropdownMenuItem(value: o, child: Text(o)))
             .toList(),
@@ -220,7 +224,11 @@ class _NaverrekenFormScreenState extends ConsumerState<NaverrekenFormScreen> {
       keyboardType: v.type == 'number'
           ? const TextInputType.numberWithOptions(decimal: true)
           : TextInputType.text,
-      decoration: InputDecoration(labelText: v.vraag),
+      decoration: InputDecoration(
+        labelText: v.vraag,
+        filled: false,
+        fillColor: Colors.transparent,
+      ),
       validator: v.verplicht
           ? (val) => (val == null || val.trim().isEmpty) ? 'Verplicht veld' : null
           : null,

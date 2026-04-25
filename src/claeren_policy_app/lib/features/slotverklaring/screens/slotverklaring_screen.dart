@@ -373,41 +373,42 @@ class _SlotverklaringScreenState
                       size: 20, color: AppColors.textSecondary),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                        inputDecorationTheme:
-                            const InputDecorationTheme(filled: false),
+                    child: TextField(
+                      controller: _otpCtrl,
+                      keyboardType: TextInputType.number,
+                      maxLength: 6,
+                      onChanged: (_) =>
+                          setState(() => _otpError = null),
+                      expands: true,
+                      maxLines: null,
+                      minLines: null,
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 8,
                       ),
-                      child: TextField(
-                        controller: _otpCtrl,
-                        keyboardType: TextInputType.number,
-                        maxLength: 6,
-                        onChanged: (_) =>
-                            setState(() => _otpError = null),
-                        expands: true,
-                        maxLines: null,
-                        minLines: null,
-                        style: const TextStyle(
-                          color: AppColors.textPrimary,
+                      decoration: InputDecoration(
+                        hintText: '000000',
+                        hintStyle: TextStyle(
+                          color: AppColors.textSecondary
+                              .withValues(alpha: 0.5),
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 8,
                         ),
-                        decoration: InputDecoration.collapsed(
-                          hintText: '000000',
-                          hintStyle: TextStyle(
-                            color: AppColors.textSecondary
-                                .withValues(alpha: 0.5),
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 8,
-                          ),
-                        ),
-                        buildCounter: (_, {required currentLength,
-                            required isFocused,
-                            required maxLength}) =>
-                            const SizedBox.shrink(),
+                        filled: false,
+                        fillColor: Colors.transparent,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        isDense: true,
+                        contentPadding: EdgeInsets.zero,
                       ),
+                      buildCounter: (_, {required currentLength,
+                          required isFocused,
+                          required maxLength}) =>
+                          const SizedBox.shrink(),
                     ),
                   ),
                 ],

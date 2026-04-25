@@ -90,6 +90,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   labelText: 'Geboortedatum',
                   hintText: 'dd-MM-yyyy',
                   prefixIcon: Icon(Icons.cake_outlined),
+                  filled: false,
+                  fillColor: Colors.transparent,
                 ),
                 validator: (v) => (v == null || v.isEmpty) ? 'Verplicht veld' : null,
               ),
@@ -102,6 +104,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   labelText: 'Postcode',
                   hintText: '1234AB',
                   prefixIcon: Icon(Icons.location_on_outlined),
+                  filled: false,
+                  fillColor: Colors.transparent,
                 ),
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Verplicht veld';
@@ -119,6 +123,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   labelText: 'Huisnummer',
                   hintText: '1A',
                   prefixIcon: Icon(Icons.home_outlined),
+                  filled: false,
+                  fillColor: Colors.transparent,
                 ),
                 validator: (v) => (v == null || v.isEmpty) ? 'Verplicht veld' : null,
               ),
