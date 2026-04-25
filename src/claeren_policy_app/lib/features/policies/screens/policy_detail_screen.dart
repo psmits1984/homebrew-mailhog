@@ -51,18 +51,50 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
 
     return detailAsync.when(
       loading: () => Scaffold(
-        appBar: AppBar(title: Text(widget.polisNummer)),
+        appBar: AppBar(
+          title: Text(widget.polisNummer),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => context.pop(),
+          ),
+        ),
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (e, _) => Scaffold(
-        appBar: AppBar(title: Text(widget.polisNummer)),
-        body:
-            const Center(child: Text('Polisdetail kon niet worden geladen.')),
+        appBar: AppBar(
+          title: Text(widget.polisNummer),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => context.pop(),
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48, color: AppColors.error),
+              const SizedBox(height: 16),
+              const Text('Polisdetail kon niet worden geladen.'),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: () => ref.invalidate(
+                    polisDetailProvider((widget.entityId, widget.polisNummer))),
+                child: const Text('Opnieuw'),
+              ),
+            ],
+          ),
+        ),
       ),
       data: (detail) {
         if (detail == null) {
           return Scaffold(
-            appBar: AppBar(title: Text(widget.polisNummer)),
+            appBar: AppBar(
+              title: Text(widget.polisNummer),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => context.pop(),
+              ),
+            ),
             body: const Center(child: Text('Polis niet gevonden.')),
           );
         }

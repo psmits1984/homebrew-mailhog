@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../core/constants/api_constants.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/platform/web_init.dart';
+import '../../../core/widgets/app_bottom_nav.dart';
 import '../models/payment_model.dart';
 import '../repository/payment_repository.dart';
 
@@ -27,10 +28,11 @@ class PaymentsScreen extends ConsumerWidget {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Betaalbewijzen'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => context.pop(),
-        ),
+        automaticallyImplyLeading: false,
+      ),
+      bottomNavigationBar: AppBottomNav(
+        entityId: entityId,
+        currentTab: BottomNavTab.betalingen,
       ),
       body: betalingenAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),

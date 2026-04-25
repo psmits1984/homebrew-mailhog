@@ -350,78 +350,34 @@ class _SlotverklaringScreenState
         const SizedBox(height: 10),
 
         // OTP input
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 54,
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: _otpError != null
-                      ? AppColors.error
-                      : AppColors.divider,
-                  width: 1.5,
-                ),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Icon(Icons.lock_outline,
-                      size: 20, color: AppColors.textSecondary),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      controller: _otpCtrl,
-                      keyboardType: TextInputType.number,
-                      maxLength: 6,
-                      onChanged: (_) =>
-                          setState(() => _otpError = null),
-                      expands: true,
-                      maxLines: null,
-                      minLines: null,
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 8,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: '000000',
-                        hintStyle: TextStyle(
-                          color: AppColors.textSecondary
-                              .withValues(alpha: 0.5),
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 8,
-                        ),
-                        filled: false,
-                        fillColor: Colors.transparent,
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      buildCounter: (_, {required currentLength,
-                          required isFocused,
-                          required maxLength}) =>
-                          const SizedBox.shrink(),
-                    ),
-                  ),
-                ],
-              ),
+        TextFormField(
+          controller: _otpCtrl,
+          keyboardType: TextInputType.number,
+          textAlign: TextAlign.center,
+          maxLength: 6,
+          onChanged: (_) => setState(() => _otpError = null),
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 8),
+          decoration: InputDecoration(
+            hintText: '------',
+            hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 24, letterSpacing: 8),
+            errorText: _otpError,
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppColors.divider),
             ),
-            if (_otpError != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 4, left: 4),
-                child: Text(_otpError!,
-                    style: const TextStyle(
-                        color: AppColors.error, fontSize: 12)),
-              ),
-          ],
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppColors.divider),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
+            ),
+            counterText: '',
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+          ),
         ),
         const SizedBox(height: 24),
 

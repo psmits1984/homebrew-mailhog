@@ -91,6 +91,27 @@ public static class MockData
                 new(new DateTime(2023, 1, 1), "Jaarlijkse verlenging", 2_100.00m, 2_300.00m),
             }
         ),
+        ["POL-2024-002"] = new PolicyDetail(
+            "POL-2024-002", "Opstalverzekering Kantoor", "Nationale-Nederlanden", PolicyStatus.Actief,
+            1_200.00m, 500.00m,
+            new DateOnly(2024, 3, 1), new DateOnly(2025, 3, 1), "OPSTAL", "ENT-001",
+            Dekkingen: new()
+            {
+                new("OPSTAL-BRAND", "Brandschade", 1_500_000m),
+                new("OPSTAL-STORM", "Stormschade", 1_500_000m),
+                new("OPSTAL-WATER", "Waterschade", 500_000m),
+                new("OPSTAL-GLAS", "Glasbreuk", 25_000m),
+            },
+            Documenten: new()
+            {
+                new("DOC-020", "Polisblad Opstal 2024", "Polisblad", new DateTime(2024, 3, 5), "/api/documents/DOC-020"),
+                new("DOC-021", "Algemene Voorwaarden Opstal", "Voorwaarden", new DateTime(2024, 3, 5), "/api/documents/DOC-021"),
+            },
+            Historie: new()
+            {
+                new(new DateTime(2024, 3, 1), "Nieuw afgesloten", 0m, 1_200.00m),
+            }
+        ),
         ["POL-2024-003"] = new PolicyDetail(
             "POL-2024-003", "Wagenpark Allrisk", "Interpolis", PolicyStatus.Actief,
             8_760.00m, 250.00m,
@@ -110,6 +131,81 @@ public static class MockData
             {
                 new(new DateTime(2024, 1, 15), "Kenteken toegevoegd: 01-ABC-2", 8_400.00m, 8_760.00m),
                 new(new DateTime(2023, 1, 15), "Jaarlijkse verlenging", 7_900.00m, 8_400.00m),
+            }
+        ),
+        ["POL-2024-004"] = new PolicyDetail(
+            "POL-2024-004", "Elektronicaverzekering", "AXA", PolicyStatus.Actief,
+            540.00m, 150.00m,
+            new DateOnly(2024, 6, 1), new DateOnly(2025, 6, 1), "ELEKTRO", "ENT-002",
+            Dekkingen: new()
+            {
+                new("ELEKTRO-ALL", "All-risk elektronica", 75_000m),
+                new("ELEKTRO-DATA", "Dataverlies", 10_000m),
+            },
+            Documenten: new()
+            {
+                new("DOC-030", "Polisblad Elektronica 2024", "Polisblad", new DateTime(2024, 6, 5), "/api/documents/DOC-030"),
+            },
+            Historie: new()
+            {
+                new(new DateTime(2024, 6, 1), "Nieuw afgesloten", 0m, 540.00m),
+            }
+        ),
+        ["POL-2024-005"] = new PolicyDetail(
+            "POL-2024-005", "Beroepsaansprakelijkheid", "Allianz", PolicyStatus.Actief,
+            3_100.00m, 2_500.00m,
+            new DateOnly(2024, 1, 1), new DateOnly(2025, 1, 1), "BAV", "ENT-002",
+            Dekkingen: new()
+            {
+                new("BAV-PERS", "Personenschade", 2_500_000m),
+                new("BAV-VERM", "Vermogensschade", 1_000_000m),
+            },
+            Documenten: new()
+            {
+                new("DOC-040", "Polisblad BAV 2024", "Polisblad", new DateTime(2024, 1, 5), "/api/documents/DOC-040"),
+                new("DOC-041", "Algemene Voorwaarden BAV", "Voorwaarden", new DateTime(2024, 1, 5), "/api/documents/DOC-041"),
+            },
+            Historie: new()
+            {
+                new(new DateTime(2024, 1, 1), "Jaarlijkse verlenging", 2_900.00m, 3_100.00m),
+            }
+        ),
+        ["POL-2024-006"] = new PolicyDetail(
+            "POL-2024-006", "Inboedelverzekering", "Centraal Beheer", PolicyStatus.Actief,
+            320.00m, 200.00m,
+            new DateOnly(2023, 9, 1), new DateOnly(2024, 9, 1), "INBOEDEL", "ENT-003",
+            Dekkingen: new()
+            {
+                new("INBOEDEL-BRAND", "Brand en inbraak", 50_000m),
+                new("INBOEDEL-WATER", "Waterschade", 50_000m),
+            },
+            Documenten: new()
+            {
+                new("DOC-050", "Polisblad Inboedel 2023", "Polisblad", new DateTime(2023, 9, 5), "/api/documents/DOC-050"),
+            },
+            Historie: new()
+            {
+                new(new DateTime(2023, 9, 1), "Jaarlijkse verlenging", 295.00m, 320.00m),
+            }
+        ),
+        ["POL-2024-007"] = new PolicyDetail(
+            "POL-2024-007", "Woonhuis All-Risk", "Nationale-Nederlanden", PolicyStatus.Actief,
+            780.00m, 500.00m,
+            new DateOnly(2023, 9, 1), new DateOnly(2024, 9, 1), "OPSTAL", "ENT-003",
+            Dekkingen: new()
+            {
+                new("WOON-BRAND", "Brandschade", 350_000m),
+                new("WOON-STORM", "Stormschade", 350_000m),
+                new("WOON-WATER", "Waterschade", 100_000m),
+                new("WOON-GLAS", "Glasbreuk", 5_000m),
+            },
+            Documenten: new()
+            {
+                new("DOC-060", "Polisblad Woonhuis 2023", "Polisblad", new DateTime(2023, 9, 5), "/api/documents/DOC-060"),
+            },
+            Historie: new()
+            {
+                new(new DateTime(2023, 9, 1), "Jaarlijkse verlenging", 740.00m, 780.00m),
             }
         ),
     };
